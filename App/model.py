@@ -31,20 +31,51 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
+import os
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
 """
 
+# =======================
 # Construccion de modelos
+# =======================
 
+
+# ==============================================
 # Funciones para agregar informacion al catalogo
+# ==============================================
 
+
+# ================================
 # Funciones para creacion de datos
+# ================================
 
+
+# =====================
 # Funciones de consulta
+# =====================
 
+
+# ================================================================
 # Funciones utilizadas para comparar elementos dentro de una lista
+# ================================================================
 
+
+# =========================
 # Funciones de ordenamiento
+# =========================
+
+
+# =========================
+# Funciones para consola
+# =========================
+def clearConsole():
+    command = 'clear'
+    if os.name in ('nt', 'dos'):  # If Machine is running on Windows, use cls
+        command = 'cls'
+    os.system(command)
+
+def exitProgram():
+    os._exit(1)
