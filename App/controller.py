@@ -54,9 +54,14 @@ def loadData(catalog, fileName):
     contador = 1
     for player in input_file:
         player["club_joined"] = datetime.strptime(player["club_joined"], '%Y-%m-%d')
+        player["player_positions"] = list(player["player_positions"].replace(",", "").split())
+        player["overall"] = float(player["overall"])
+        player["potential"] = float(player["potential"])
+        player["wage_eur"] = float(player["wage_eur"])
         model.addPlayer(catalog, player)
         model.addPlayerID_playerValue(catalog, player, contador)
         model.clubName_PlayersValue(catalog, player, contador)
+        model.posicionJugador_PlayerValue(catalog, player, contador)
         contador += 1
     return catalog
 
@@ -67,6 +72,22 @@ def loadData(catalog, fileName):
 def requerimiento1(catalog, club):
     return model.requerimiento1(catalog, club)
 
+def requerimiento2(catalog,
+                   playerPosition,
+                   limInferiorDesempenio,
+                   limSuperiorDesempenio,
+                   limInferiorPotencial,
+                   limSuperiorPotencial,
+                   limInferiorSalario,
+                   limSuperiorSalario):
+    return model.requerimiento2(catalog,
+                   playerPosition,
+                   limInferiorDesempenio,
+                   limSuperiorDesempenio,
+                   limInferiorPotencial,
+                   limSuperiorPotencial,
+                   limInferiorSalario,
+                   limSuperiorSalario)
 
 
 # =====================

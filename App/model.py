@@ -25,6 +25,7 @@
  """
 
 
+from xmlrpc.server import list_public_methods
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -57,6 +58,9 @@ def newCatalog():
 
     # requerimiento 1
     catalog['clubName_PlayersValue'] = mp.newMap(numelements=50000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+
+    # requerimiento 2
+    catalog['posicionJugador_PlayerValue'] = mp.newMap(numelements=50000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
     return catalog
 
@@ -91,7 +95,6 @@ def clubName_PlayersValue(catalog, player, pos):
         mp.put(map, club, lst)
     lt.addLast(lst, lt.getElement(catalog['listaGeneral_Datos'], pos))
 
-
 def requerimiento1(catalog, club):
     clubPlayers = me.getValue(mp.get(catalog['clubName_PlayersValue'], club))
     ordered_map = om.newMap(comparefunction=compare_clubJoinedDate)
@@ -104,6 +107,63 @@ def requerimiento1(catalog, club):
     lstPlayers = om.values(ordered_map, lowerLimit, upperLimit)
     lstSize = lt.size(lstPlayers)
     return lstPlayers, lstSize 
+
+
+#requerimiento 2 - Le suma un segundo a la carga
+def posicionJugador_PlayerValue(catalog, player, pos):
+    map = catalog["posicionJugador_PlayerValue"]
+    playerPositions = player["player_positions"]
+    for position in playerPositions:
+        exist = mp.contains(map, position)
+        if exist:
+            entry = mp.get(map, position)
+            lst = me.getValue(entry)
+        else:
+            lst = lt.newList(datastructure='ARRAY_LIST')
+            mp.put(map, position, lst)
+            # cuidado iba uno abajo posible error
+        lt.addLast(lst, lt.getElement(catalog['listaGeneral_Datos'], pos))
+
+def filtroDesempenio(lst, limInferiorDesempenio, limSuperiorDesempenio):
+    mapa = om.newMap(comparefunction=compare_playerOverall)
+    for player in lt.iterator(lst):
+        value = lt.getElement(player, 1)
+        om.put(mapa, value["overall"], player)
+    players = om.values(mapa, limInferiorDesempenio, limSuperiorDesempenio)
+    return players
+
+def filtroPotential(lst, limInferiorPotencial, limSuperiorPotencial):
+    mapa = om.newMap(comparefunction=compare_playerPotential)
+    for player in lt.iterator(lst):
+        value = lt.getElement(player, 1)
+        om.put(mapa, value["potential"], player)
+    players = om.values(mapa, limInferiorPotencial, limSuperiorPotencial)
+    return players
+
+def filtroSalario(lst, limInferiorSalario, limSuperiorSalario):
+    mapa = om.newMap(comparefunction=compare_playerPotential)
+    for player in lt.iterator(lst):
+        value = lt.getElement(player, 1)
+        om.put(mapa, value["wage_eur"], player)
+    players = om.values(mapa, limInferiorSalario, limSuperiorSalario)
+    return players
+
+def requerimiento2(catalog,
+                   playerPosition,
+                   limInferiorDesempenio,
+                   limSuperiorDesempenio,
+                   limInferiorPotencial,
+                   limSuperiorPotencial,
+                   limInferiorSalario,
+                   limSuperiorSalario):
+    lst = me.getValue(mp.get(catalog["posicionJugador_PlayerValue"], playerPosition))
+    lst = filtroDesempenio(lst, limInferiorDesempenio, limSuperiorDesempenio)
+    lst = filtroPotential(lst, limInferiorPotencial, limSuperiorPotencial)
+    lst = filtroSalario(lst, limInferiorSalario, limSuperiorSalario)
+    lstSize = lt.size(lst)
+    return lst, lstSize
+    
+
 
 
 
@@ -147,6 +207,27 @@ def compare_clubJoinedDate(date1, date2):
     else:
         return -1
 
+def compare_playerOverall(player1, player2):
+    """
+    Compara dos crimenes
+    """
+    if (player1 == player2):
+        return 0
+    elif player1 > player2:
+        return 1
+    else:
+        return -1
+
+def compare_playerPotential(player1, player2):
+    """
+    Compara dos crimenes
+    """
+    if (player1 == player2):
+        return 0
+    elif player1 > player2:
+        return 1
+    else:
+        return -1
 
 # =========================
 # Funciones de ordenamiento
