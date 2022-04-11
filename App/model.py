@@ -30,6 +30,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.ADT import orderedmap as om
 assert cf
 import os
 
@@ -51,6 +52,12 @@ def newCatalog():
 
     catalog['listaGeneral_Datos'] = lt.newList(datastructure='ARRAY_LIST', cmpfunction=None)
 
+    # No sirve para ningun requerimiento hasta ahora
+    catalog['playerID_playerValue'] = mp.newMap(numelements=50000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+
+    # requerimiento 1
+    catalog['clubName_PlayersValue'] = mp.newMap(numelements=50000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+
     return catalog
 
 
@@ -60,8 +67,44 @@ def newCatalog():
 def addPlayer(catalog, player):
     """
     """
-    lt.addLast(catalog['listaGeneral_Datos'], player)
+    lstPlayer = lt.newList(datastructure="ARRAY_LIST", cmpfunction=None)
+    player = lt.addLast(lstPlayer, player)
+    lt.addLast(catalog['listaGeneral_Datos'], lstPlayer)
     return catalog
+
+# No sirve para ningun requerimiento hasta ahora
+def addPlayerID_playerValue(catalog, player, pos):
+    map = catalog['playerID_playerValue']
+    lst = catalog['listaGeneral_Datos']
+    mp.put(map, player["sofifa_id"], lt.getElement(lst, pos))
+
+# requerimiento 1
+def clubName_PlayersValue(catalog, player, pos):
+    map = catalog['clubName_PlayersValue']
+    club = player["club_name"]
+    exist = mp.contains(map, club)
+    if exist:
+        entry = mp.get(map, club)
+        lst = me.getValue(entry)
+    else:
+        lst = lt.newList(datastructure='ARRAY_LIST')
+        mp.put(map, club, lst)
+    lt.addLast(lst, lt.getElement(catalog['listaGeneral_Datos'], pos))
+
+
+def requerimiento1(catalog, club):
+    clubPlayers = me.getValue(mp.get(catalog['clubName_PlayersValue'], club))
+    ordered_map = om.newMap(comparefunction=compare_clubJoinedDate)
+    for player in lt.iterator(clubPlayers):
+        value = lt.getElement(player, 1)
+        om.put(ordered_map, value["club_joined"], player)
+    
+    lowerLimit = om.minKey(ordered_map)
+    upperLimit = om.select(ordered_map, 4)
+    lstPlayers = om.values(ordered_map, lowerLimit, upperLimit)
+    lstSize = lt.size(lstPlayers)
+    return lstPlayers, lstSize 
+
 
 
 # ================================
@@ -91,8 +134,18 @@ def lstGet(lst, pos):
 
 
 # ================================================================
-# Funciones utilizadas para comparar elementos dentro de una lista
+# Funciones de comparacion
 # ================================================================
+def compare_clubJoinedDate(date1, date2):
+    """
+    Compara dos crimenes
+    """
+    if (date1 == date2):
+        return 0
+    elif date1 > date2:
+        return 1
+    else:
+        return -1
 
 
 # =========================
