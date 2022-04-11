@@ -42,10 +42,26 @@ los mismos.
 # Construccion de modelos
 # =======================
 
+def newCatalog():
+    """ 
+    Crear un nuevo catalogo
+    """
+    catalog = {'listaGeneral_Datos': None,
+                }
+
+    catalog['listaGeneral_Datos'] = lt.newList(datastructure='ARRAY_LIST', cmpfunction=None)
+
+    return catalog
+
 
 # ==============================================
 # Funciones para agregar informacion al catalogo
 # ==============================================
+def addPlayer(catalog, player):
+    """
+    """
+    lt.addLast(catalog['listaGeneral_Datos'], player)
+    return catalog
 
 
 # ================================
@@ -56,6 +72,22 @@ los mismos.
 # =====================
 # Funciones de consulta
 # =====================
+def getPrimerosCinco_UltimosCinco(lst):
+    players = lt.newList()
+    lstSize = lt.size(lst)
+    for _ in range(1, 6):
+        player = lt.getElement(lst, _)
+        lt.addLast(players, player)
+    for _ in range(lstSize - 4, lstSize + 1):
+        player = lt.getElement(lst, _)
+        lt.addLast(players, player)
+    lstSize = lt.size(players)
+    return players, lstSize
+
+def lstGet(lst, pos):
+    return lt.getElement(lst, pos)
+        
+
 
 
 # ================================================================

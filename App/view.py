@@ -23,8 +23,9 @@
 import config as cf
 import sys
 import controller
-from DISClib.ADT import list as lt
 assert cf
+from DISClib.ADT import list as lt
+from prettytable import PrettyTable
 
 
 """
@@ -45,6 +46,100 @@ def printMenu():
     print("7- Cargar información en el catálogo")
     print("8- Cualquier tecla para salir")
 
+
+def AskForFileSize():
+    controller.clearConsole()
+    print("Cual archivo te gustaria cargar?")
+    print("1- Small\n" +
+          "2- Large\n" +
+          "3- 5%\n" +
+          "4- 10%\n" +
+          "5- 20%\n" +
+          "6- 30%\n" +
+          "7- 50%\n" +
+          "8- 80%\n")
+    try:
+        size = int(input("> "))
+        if (size < 1) or (size > 8):
+            controller.clearConsole()
+            print("Por favor introduzca una opcion valida")
+            input("\n> Hundir cualquier tecla para continuar...")
+            size = AskForFileSize()
+    except:
+        controller.clearConsole()
+        print("Por favor introduzca una opcion valida")
+        input("\n> Hundir cualquier tecla para continuar...")
+        size = AskForFileSize()
+    controller.clearConsole()
+    return size
+
+
+def getFileSize():
+    file = "fifa-players-2022-utf8-"
+    fileSize = AskForFileSize()
+    if fileSize == 1:
+        file += "small.csv"
+    elif fileSize == 2:
+        file += "large.csv"
+    elif fileSize == 3:
+        file += "5pct.csv"
+    elif fileSize == 4:
+        file += "10pct.csv"
+    elif fileSize == 5:
+        file += "20pct.csv"
+    elif fileSize == 6:
+        file += "30pct.csv"
+    elif fileSize == 7:
+        file += "50pct.csv"
+    elif fileSize == 8:
+        file += "80pct.csv"
+    return file        
+
+
+def printPrimerosCinco_UltimosCinco_Players(lstPlayers, lstSize):
+    table = PrettyTable()
+    table.field_names = ["Nombre", "Edad", "Altura", "Peso", "Nacionalidad", "Valor (€)", "Salario (€)", "Clausula de liberacion (€)", "Liga", "Club", "Fecha de vinculacion", "Posiciones", "Reputacion", "Tags", "Comentarios"]
+    for _ in range(1, 6):
+        player = controller.lstGet(lstPlayers, _)
+        table.add_row([player["short_name"],
+                       player["age"],
+                       player["height_cm"],
+                       player["weight_kg"],
+                       player["nationality_name"],
+                       player["value_eur"],
+                       player["wage_eur"],
+                       player["release_clause_eur"],
+                       player["league_name"],
+                       player["club_name"],
+                       player["club_joined"],
+                       player["player_positions"],
+                       player["international_reputation"],
+                       player["player_tags"],
+                       player["player_traits"],
+                       ])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    for _ in range(lstSize - 4, lstSize + 1):
+        player = controller.lstGet(lstPlayers, _)
+        table.add_row([player["short_name"],
+                       player["age"],
+                       player["height_cm"],
+                       player["weight_kg"],
+                       player["nationality_name"],
+                       player["value_eur"],
+                       player["wage_eur"],
+                       player["release_clause_eur"],
+                       player["league_name"],
+                       player["club_name"],
+                       player["club_joined"],
+                       player["player_positions"],
+                       player["international_reputation"],
+                       player["player_tags"],
+                       player["player_traits"],
+                       ])
+    return print(table.get_string())
+
 catalog = None
 
 """
@@ -52,7 +147,6 @@ Menu principal
 """
 def menuPrincipal():
     try:
-        
         while True:
             controller.clearConsole()
             printMenu()
@@ -62,36 +156,40 @@ def menuPrincipal():
 
             if int(inputs[0]) == 1:
 
-                input("\n>Hundir cualquier tecla para continuar...")
+                input("\n> Hundir cualquier tecla para continuar...")
 
 
             elif int(inputs[0]) == 2:
 
-                input("\n>Hundir cualquier tecla para continuar...")
+                input("\n> Hundir cualquier tecla para continuar...")
             
 
             elif int(inputs[0]) == 3:
                 
-                input("\n>Hundir cualquier tecla para continuar...")
+                input("\n> Hundir cualquier tecla para continuar...")
 
 
             elif int(inputs[0]) == 4:
 
-                input("\n>Hundir cualquier tecla para continuar...")
+                input("\n> Hundir cualquier tecla para continuar...")
 
 
             elif int(inputs[0]) == 5:
                 
-                input("\n>Hundir cualquier tecla para continuar...")
+                input("\n> Hundir cualquier tecla para continuar...")
 
 
             elif int(inputs[0]) == 6:
                 
-                input("\n>Hundir cualquier tecla para continuar...")
+                input("\n> Hundir cualquier tecla para continuar...")
 
 
             elif int(inputs[0]) == 7:
+                fileSize = getFileSize()
                 print("Cargando información de los archivos ....")
+                controller.loadData(catalog, fileSize)
+                lstPlayers, lstSize = controller.getPrimerosCinco_UltimosCinco(catalog["listaGeneral_Datos"])
+                printPrimerosCinco_UltimosCinco_Players(lstPlayers, lstSize)
 
                 input("\n>Hundir cualquier numero para continuar...")
             
@@ -101,8 +199,10 @@ def menuPrincipal():
                 controller.exitProgram()
                 
 
-    except:
+    except Exception as ex:
+        controller.clearConsole()
         print("Por favor selecciona una opcion valida")
+        print(ex.message)
         input("\n>Hundir cualquier numero para continuar...")
         menuPrincipal()
 
@@ -110,4 +210,6 @@ def menuPrincipal():
 # ================
 # Iniciar programa
 # ================
+catalog = controller.init()
 menuPrincipal()
+
