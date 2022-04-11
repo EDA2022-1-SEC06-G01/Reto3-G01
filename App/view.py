@@ -26,6 +26,8 @@ import controller
 assert cf
 from DISClib.ADT import list as lt
 from prettytable import PrettyTable
+from DISClib.ADT import map as mp
+
 
 
 """
@@ -101,6 +103,7 @@ def printPrimerosCinco_UltimosCinco_Players(lstPlayers, lstSize):
     table.field_names = ["Nombre", "Edad", "Altura", "Peso", "Nacionalidad", "Valor (€)", "Salario (€)", "Clausula de liberacion (€)", "Liga", "Club", "Fecha de vinculacion", "Posiciones", "Reputacion", "Tags", "Comentarios"]
     for _ in range(1, 6):
         player = controller.lstGet(lstPlayers, _)
+        player = controller.lstGet(player, 0)
         table.add_row([player["short_name"],
                        player["age"],
                        player["height_cm"],
@@ -122,6 +125,7 @@ def printPrimerosCinco_UltimosCinco_Players(lstPlayers, lstSize):
     table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
     for _ in range(lstSize - 4, lstSize + 1):
         player = controller.lstGet(lstPlayers, _)
+        player = controller.lstGet(player, 0)
         table.add_row([player["short_name"],
                        player["age"],
                        player["height_cm"],
@@ -140,6 +144,27 @@ def printPrimerosCinco_UltimosCinco_Players(lstPlayers, lstSize):
                        ])
     return print(table.get_string())
 
+
+def printRequerimiento1(lstPlayers, lstSize):
+    table = PrettyTable()
+    table.field_names = ["Nombre", "Edad", "Fecha de nacimiento", "Nacionalidad", "Valor Contrato", "Salario Jugador", "Valor Clausula Liberacion", "Fecha Vinculaicon a club", "Posiciones", "Comentarios", "Tags"]
+    for _ in range(1, 6):
+        player = controller.lstGet(lstPlayers, _)
+        player = controller.lstGet(player, 0)
+        table.add_row([player["short_name"],
+                       player["age"],
+                       player["dob"],
+                       player["nationality_name"],
+                       player["value_eur"],
+                       player["wage_eur"],
+                       player["release_clause_eur"],
+                       player["club_joined"],
+                       player["player_positions"],
+                       player["player_traits"],
+                       player["player_tags"],
+                       ])
+    return print(table.get_string())
+
 catalog = None
 
 """
@@ -155,7 +180,10 @@ def menuPrincipal():
 
 
             if int(inputs[0]) == 1:
-
+                club = input("Por favor introduce el club que deseas buscar")
+                lstPlayers, lstSize  = controller.requerimiento1(catalog, club)
+                printRequerimiento1(lstPlayers, lstSize)
+                
                 input("\n> Hundir cualquier tecla para continuar...")
 
 
@@ -212,4 +240,3 @@ def menuPrincipal():
 # ================
 catalog = controller.init()
 menuPrincipal()
-

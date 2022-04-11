@@ -23,6 +23,7 @@
 import config as cf
 import model
 import csv
+from datetime import datetime
 
 
 """
@@ -50,9 +51,22 @@ def loadData(catalog, fileName):
     fileName = cf.data_dir + fileName
     input_file = csv.DictReader(open(fileName, encoding="utf-8"),
                                 delimiter=",")
+    contador = 1
     for player in input_file:
+        player["club_joined"] = datetime.strptime(player["club_joined"], '%Y-%m-%d')
         model.addPlayer(catalog, player)
+        model.addPlayerID_playerValue(catalog, player, contador)
+        model.clubName_PlayersValue(catalog, player, contador)
+        contador += 1
     return catalog
+
+# =====================
+# Funciones de requerimientos
+# =====================
+
+def requerimiento1(catalog, club):
+    return model.requerimiento1(catalog, club)
+
 
 
 # =====================
