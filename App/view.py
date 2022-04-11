@@ -165,6 +165,48 @@ def printRequerimiento1(lstPlayers, lstSize):
                        ])
     return print(table.get_string())
 
+
+def printRequerimiento2(lstPlayers, lstSize):
+    table = PrettyTable()
+    table.field_names = ["Nombre", "Edad", "Fecha de nacimiento", "Nacioinalidad", "Valor de contrato", "Salario", "Valor clausula de liberacion", "Potencial", "Desempenio", "Posiciones del jugador", "Comentarios", "Etiquetas"]
+    for _ in range(1, 4):
+        player = controller.lstGet(lstPlayers, _)
+        player = controller.lstGet(player, 0)
+        table.add_row([player["short_name"],
+                       player["age"],
+                       player["dob"],
+                       player["nationality_name"],
+                       player["value_eur"],
+                       player["wage_eur"],
+                       player["release_clause_eur"],
+                       player["potential"],
+                       player["overall"],
+                       player["player_positions"],
+                       player["player_traits"],
+                       player["player_tags"]
+                       ])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    for _ in range(lstSize - 2, lstSize + 1):
+        player = controller.lstGet(lstPlayers, _)
+        player = controller.lstGet(player, 0)
+        table.add_row([player["short_name"],
+                       player["age"],
+                       player["dob"],
+                       player["nationality_name"],
+                       player["value_eur"],
+                       player["wage_eur"],
+                       player["release_clause_eur"],
+                       player["potential"],
+                       player["overall"],
+                       player["player_positions"],
+                       player["player_traits"],
+                       player["player_tags"]
+                       ])
+    return print(table.get_string())
+
+
 catalog = None
 
 """
@@ -188,7 +230,31 @@ def menuPrincipal():
 
 
             elif int(inputs[0]) == 2:
-
+                '''
+                playerPosition = input("Por favor introducir la posicion de el jugador: ")
+                limInferiorDesempenio = float(input("Por favor introducir el limite inferior del desempenio: "))
+                limSuperiorDesempenio = float(input("Por favor introducir el limite superior del desempenio: "))
+                limInferiorPotencial = float(input("Por favor introducir el limite superior del potencial: "))
+                limSuperiorPotencial = float(input("Por favor introducir el limite superior del potencial: "))
+                limInferiorSalario = float(input("Por favor introducir el limite superior del potencial: "))
+                limSuperiorSalario = float(input("Por favor introducir el limite superior del salario: "))
+                '''
+                playerPosition = "CB"
+                limInferiorDesempenio = 55
+                limSuperiorDesempenio = 71
+                limInferiorPotencial = 33
+                limSuperiorPotencial = 90
+                limInferiorSalario = 950
+                limSuperiorSalario = 13000
+                lstPlayers, lstSize = controller.requerimiento2(catalog,
+                                                                playerPosition,
+                                                                limInferiorDesempenio,
+                                                                limSuperiorDesempenio,
+                                                                limInferiorPotencial,
+                                                                limSuperiorPotencial,
+                                                                limInferiorSalario,
+                                                                limSuperiorSalario)
+                printRequerimiento2(lstPlayers, lstSize)
                 input("\n> Hundir cualquier tecla para continuar...")
             
 
@@ -215,10 +281,12 @@ def menuPrincipal():
             elif int(inputs[0]) == 7:
                 fileSize = getFileSize()
                 print("Cargando información de los archivos ....")
+                import time
+                start = time.process_time()
                 controller.loadData(catalog, fileSize)
                 lstPlayers, lstSize = controller.getPrimerosCinco_UltimosCinco(catalog["listaGeneral_Datos"])
                 printPrimerosCinco_UltimosCinco_Players(lstPlayers, lstSize)
-
+                print(time.process_time() - start)
                 input("\n>Hundir cualquier numero para continuar...")
             
 
