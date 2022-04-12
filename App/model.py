@@ -54,13 +54,16 @@ def newCatalog():
     catalog['listaGeneral_Datos'] = lt.newList(datastructure='ARRAY_LIST', cmpfunction=None)
 
     # No sirve para ningun requerimiento hasta ahora
-    catalog['playerID_playerValue'] = mp.newMap(numelements=50000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+    catalog['playerID_playerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
     # requerimiento 1
-    catalog['clubName_PlayersValue'] = mp.newMap(numelements=50000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+    catalog['clubName_PlayersValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
     # requerimiento 2
-    catalog['posicionJugador_PlayerValue'] = mp.newMap(numelements=50000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+    catalog['posicionJugador_PlayerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+
+    # requerimiento 3
+    catalog['playerTag_PlayerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
     return catalog
 
@@ -140,6 +143,7 @@ def filtroPotential(lst, limInferiorPotencial, limSuperiorPotencial):
     players = om.values(mapa, limInferiorPotencial, limSuperiorPotencial)
     return players
 
+# Usado en req 2 y 3
 def filtroSalario(lst, limInferiorSalario, limSuperiorSalario):
     mapa = om.newMap(comparefunction=compare_playerPotential)
     for player in lt.iterator(lst):
@@ -164,7 +168,28 @@ def requerimiento2(catalog,
     return lst, lstSize
     
 
+# Requerimiento 3 - Basado en req 2 - Incrementa 0.8 seg
+def playerTag_PlayerValue(catalog, player, pos):
+    map = catalog["playerTag_PlayerValue"]
+    tags = player["player_tags"]
+    for tag in tags:
+        if tag == "Unknown":
+            continue
+        else:
+            exist = mp.contains(map, tag)
+            if exist:
+                entry = mp.get(map, tag)
+                lst = me.getValue(entry)
+            else:
+                lst = lt.newList(datastructure='ARRAY_LIST')
+                mp.put(map, tag, lst)
+            lt.addLast(lst, lt.getElement(catalog['listaGeneral_Datos'], pos))
 
+def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
+    lst = me.getValue(mp.get(catalog["playerTag_PlayerValue"], playerTag))
+    lst = filtroSalario(lst, limInferiorSalario, limSuperiorSalario)
+    lstSize = lt.size(lst)
+    return lst, lstSize
 
 
 # ================================
