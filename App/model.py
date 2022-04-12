@@ -54,16 +54,16 @@ def newCatalog():
     catalog['listaGeneral_Datos'] = lt.newList(datastructure='ARRAY_LIST', cmpfunction=None)
 
     # No sirve para ningun requerimiento hasta ahora
-    catalog['playerID_playerValue'] = mp.newMap(numelements=50000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+    catalog['playerID_playerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
     # requerimiento 1
-    catalog['clubName_PlayersValue'] = mp.newMap(numelements=50000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+    catalog['clubName_PlayersValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
     # requerimiento 2
-    catalog['posicionJugador_PlayerValue'] = mp.newMap(numelements=50000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+    catalog['posicionJugador_PlayerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
     # requerimiento 3
-    catalog['playerTag_PlayerValue'] = mp.newMap(numelements=50000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+    catalog['playerTag_PlayerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
     return catalog
 
