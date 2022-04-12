@@ -207,6 +207,49 @@ def printRequerimiento2(lstPlayers, lstSize):
     return print(table.get_string())
 
 
+def printRequerimiento3(lstPlayers, lstSize):
+    table = PrettyTable()
+    table.field_names = ["Nombre", "Edad", "Fecha de nacimiento", "Nacioinalidad", "Valor de contrato", "Salario", "club", "Liga", "Potencial", "Desempenio", "Posiciones del jugador", "Comentarios", "Etiquetas"]
+    for _ in range(1, 4):
+        player = controller.lstGet(lstPlayers, _)
+        player = controller.lstGet(player, 0)
+        table.add_row([player["long_name"],
+                       player["age"],
+                       player["dob"],
+                       player["nationality_name"],
+                       player["value_eur"],
+                       player["wage_eur"],
+                       player["club_name"],
+                       player["league_name"],
+                       player["potential"],
+                       player["overall"],
+                       player["player_positions"],
+                       player["player_traits"],
+                       player["player_tags"]
+                       ])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    for _ in range(lstSize - 2, lstSize + 1):
+        player = controller.lstGet(lstPlayers, _)
+        player = controller.lstGet(player, 0)
+        table.add_row([player["long_name"],
+                       player["age"],
+                       player["dob"],
+                       player["nationality_name"],
+                       player["value_eur"],
+                       player["wage_eur"],
+                       player["club_name"],
+                       player["league_name"],
+                       player["potential"],
+                       player["overall"],
+                       player["player_positions"],
+                       player["player_traits"],
+                       player["player_tags"]
+                       ])
+    return print(table.get_string())
+
+
 catalog = None
 
 """
@@ -236,7 +279,7 @@ def menuPrincipal():
                 limSuperiorDesempenio = float(input("Por favor introducir el limite superior del desempenio: "))
                 limInferiorPotencial = float(input("Por favor introducir el limite superior del potencial: "))
                 limSuperiorPotencial = float(input("Por favor introducir el limite superior del potencial: "))
-                limInferiorSalario = float(input("Por favor introducir el limite superior del potencial: "))
+                limInferiorSalario = float(input("Por favor introducir el limite superior del salario: "))
                 limSuperiorSalario = float(input("Por favor introducir el limite superior del salario: "))
                 '''
                 playerPosition = "CB"
@@ -259,12 +302,21 @@ def menuPrincipal():
             
 
             elif int(inputs[0]) == 3:
-                
+                '''
+                playerTag = input("Por favor introducir el tag que desea consultar: ")
+                limInferiorSalario = float(input("Por favor introducir el limite superior del salario: "))
+                limSuperiorSalario = float(input("Por favor introducir el limite superior del salario: "))
+                '''
+                playerTag = "#Tactician"
+                limInferiorSalario = 10000
+                limSuperiorSalario = 87000
+                lstPlayers, lstSize = controller.requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag)
+                printRequerimiento3(lstPlayers, lstSize)
                 input("\n> Hundir cualquier tecla para continuar...")
 
 
             elif int(inputs[0]) == 4:
-
+                
                 input("\n> Hundir cualquier tecla para continuar...")
 
 

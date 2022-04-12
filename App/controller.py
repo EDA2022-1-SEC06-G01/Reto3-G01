@@ -58,10 +58,13 @@ def loadData(catalog, fileName):
         player["overall"] = float(player["overall"])
         player["potential"] = float(player["potential"])
         player["wage_eur"] = float(player["wage_eur"])
+        player["player_tags"] = list(player["player_tags"].replace(",", "").split()) if len(player["player_tags"]) > 0 else ["Unknown"]
         model.addPlayer(catalog, player)
         model.addPlayerID_playerValue(catalog, player, contador)
         model.clubName_PlayersValue(catalog, player, contador)
         model.posicionJugador_PlayerValue(catalog, player, contador)
+        model.playerTag_PlayerValue(catalog, player, contador)
+
         contador += 1
     return catalog
 
@@ -89,6 +92,8 @@ def requerimiento2(catalog,
                    limInferiorSalario,
                    limSuperiorSalario)
 
+def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
+    return model.requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag)
 
 # =====================
 # Funciones de consulta
