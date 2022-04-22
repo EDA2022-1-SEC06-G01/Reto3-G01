@@ -54,6 +54,7 @@ def loadData(catalog, fileName):
     contador = 1
     for player in input_file:
         player["club_joined"] = datetime.strptime(player["club_joined"], '%Y-%m-%d')
+        player["dob"] = datetime.strptime(player["dob"], '%Y-%m-%d')
         player["player_positions"] = list(player["player_positions"].replace(",", "").split())
         player["overall"] = float(player["overall"])
         player["potential"] = float(player["potential"])
@@ -61,7 +62,7 @@ def loadData(catalog, fileName):
         player["player_tags"] = list(player["player_tags"].replace(",", "").split()) if len(player["player_tags"]) > 0 else ["Unknown"]
         model.addPlayer(catalog, player)
         model.addPlayerID_playerValue(catalog, player, contador)
-        model.clubName_PlayersValue(catalog, player, contador)
+        model.rbt_clubName_PlayersValue(catalog, player, contador)
         model.posicionJugador_PlayerValue(catalog, player, contador)
         model.playerTag_PlayerValue(catalog, player, contador)
 

@@ -52,6 +52,8 @@ def newCatalog():
                 }
 
     catalog['listaGeneral_Datos'] = lt.newList(datastructure='ARRAY_LIST', cmpfunction=None)
+    
+    catalog['req1'] = om.newMap(omaptype="RBT", comparefunction=compare_clubJoinedDate)
 
     # No sirve para ningun requerimiento hasta ahora
     catalog['playerID_playerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
@@ -86,30 +88,25 @@ def addPlayerID_playerValue(catalog, player, pos):
     mp.put(map, player["sofifa_id"], lt.getElement(lst, pos))
 
 # requerimiento 1
-def clubName_PlayersValue(catalog, player, pos):
-    map = catalog['clubName_PlayersValue']
+def rbt_clubName_PlayersValue(catalog, player, pos):
+    rbt = catalog['req1']
     club = player["club_name"]
-    exist = mp.contains(map, club)
+    exist = mp.contains(rbt, club)
     if exist:
-        entry = mp.get(map, club)
+        entry = om.get(rbt, club)
         lst = me.getValue(entry)
     else:
         lst = lt.newList(datastructure='ARRAY_LIST')
-        mp.put(map, club, lst)
+        om.put(rbt, club, lst)
     lt.addLast(lst, lt.getElement(catalog['listaGeneral_Datos'], pos))
 
 def requerimiento1(catalog, club):
-    clubPlayers = me.getValue(mp.get(catalog['clubName_PlayersValue'], club))
-    ordered_map = om.newMap(comparefunction=compare_clubJoinedDate)
-    for player in lt.iterator(clubPlayers):
-        value = lt.getElement(player, 1)
-        om.put(ordered_map, value["club_joined"], player)
-    
-    lowerLimit = om.minKey(ordered_map)
-    upperLimit = om.select(ordered_map, 4)
-    lstPlayers = om.values(ordered_map, lowerLimit, upperLimit)
-    lstSize = lt.size(lstPlayers)
-    return lstPlayers, lstSize 
+    clubPlayers = me.getValue(om.get(catalog['req1'], club))
+    lstSize = lt.size(clubPlayers)
+    lstPlayers = sa.sort(clubPlayers, campare_requerimiento1)
+    altura = om.height(catalog['req1'])
+    num_elements = om.size(catalog['req1'])
+    return lstPlayers, lstSize, altura, num_elements
 
 
 #requerimiento 2 - Le suma un segundo a la carga
@@ -164,6 +161,7 @@ def requerimiento2(catalog,
     lst = filtroDesempenio(lst, limInferiorDesempenio, limSuperiorDesempenio)
     lst = filtroPotential(lst, limInferiorPotencial, limSuperiorPotencial)
     lst = filtroSalario(lst, limInferiorSalario, limSuperiorSalario)
+    lst = sa.sort(lst, compare_ageAndShortName)
     lstSize = lt.size(lst)
     return lst, lstSize
     
@@ -189,6 +187,7 @@ def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
     lst = me.getValue(mp.get(catalog["playerTag_PlayerValue"], playerTag))
     lst = filtroSalario(lst, limInferiorSalario, limSuperiorSalario)
     lstSize = lt.size(lst)
+    lst = sa.sort(lst, campare_requerimiento3)
     return lst, lstSize
 
 
@@ -253,6 +252,42 @@ def compare_playerPotential(player1, player2):
         return 1
     else:
         return -1
+
+
+def compare_ageAndShortName(player1, player2):
+    player1 = lt.getElement(player1, 0)
+    player2 = lt.getElement(player2, 0)
+    if player1["age"] == player2["age"]:
+        return player1["short_name"] > player2["short_name"]
+    else:
+        return player1["age"] > player2["age"]
+
+
+def campare_requerimiento1(player1, player2):
+    player1 = lt.getElement(player1, 0)
+    player2 = lt.getElement(player2, 0)
+    if player1["club_joined"] == player2["club_joined"]:
+        if player1["age"] == player2["age"]:
+            if player1["dob"] == player2["dob"]:
+                return player1["short_name"] > player2["short_name"]
+            else:
+                return player1["dob"] > player2["dob"]
+        else:
+            return player1["age"] > player2["age"]
+    else:
+        return player1["club_joined"] > player2["club_joined"]
+
+
+def campare_requerimiento3(player1, player2):
+    player1 = lt.getElement(player1, 0)
+    player2 = lt.getElement(player2, 0)
+    if player1["overall"] == player2["overall"]:
+        if player1["potential"] == player2["potential"]:
+            return player1["long_name"] > player2["long_name"]
+        else:
+            return player1["potential"] > player2["potential"]
+    else:
+        return player1["overall"] > player2["overall"]
 
 # =========================
 # Funciones de ordenamiento
