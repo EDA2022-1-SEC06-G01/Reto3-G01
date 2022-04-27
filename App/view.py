@@ -266,10 +266,8 @@ def menuPrincipal():
 
             if int(inputs[0]) == 1:
                 club = input("Por favor introduce el club que deseas buscar")
-                lstPlayers, lstSize, altura, num_elements  = controller.requerimiento1(catalog, club)
+                lstPlayers, lstSize  = controller.requerimiento1(catalog, club)
                 printRequerimiento1(lstPlayers, lstSize)
-                print(f"La altura del arbol es: {altura}")
-                print(f"La cantidad de elementos es: {num_elements}")
                 
                 input("\n> Hundir cualquier tecla para continuar...")
 

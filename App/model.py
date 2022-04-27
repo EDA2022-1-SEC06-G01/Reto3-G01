@@ -52,8 +52,6 @@ def newCatalog():
                 }
 
     catalog['listaGeneral_Datos'] = lt.newList(datastructure='ARRAY_LIST', cmpfunction=None)
-    
-    catalog['req1'] = om.newMap(omaptype="RBT", comparefunction=compare_clubJoinedDate)
 
     # No sirve para ningun requerimiento hasta ahora
     catalog['playerID_playerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
@@ -88,25 +86,30 @@ def addPlayerID_playerValue(catalog, player, pos):
     mp.put(map, player["sofifa_id"], lt.getElement(lst, pos))
 
 # requerimiento 1
-def rbt_clubName_PlayersValue(catalog, player, pos):
-    rbt = catalog['req1']
+def clubName_PlayersValue(catalog, player, pos):
+    map = catalog['clubName_PlayersValue']
     club = player["club_name"]
-    exist = mp.contains(rbt, club)
+    exist = mp.contains(map, club)
     if exist:
-        entry = om.get(rbt, club)
+        entry = mp.get(map, club)
         lst = me.getValue(entry)
     else:
         lst = lt.newList(datastructure='ARRAY_LIST')
-        om.put(rbt, club, lst)
+        mp.put(map, club, lst)
     lt.addLast(lst, lt.getElement(catalog['listaGeneral_Datos'], pos))
 
 def requerimiento1(catalog, club):
-    clubPlayers = me.getValue(om.get(catalog['req1'], club))
-    lstSize = lt.size(clubPlayers)
-    lstPlayers = sa.sort(clubPlayers, campare_requerimiento1)
-    altura = om.height(catalog['req1'])
-    num_elements = om.size(catalog['req1'])
-    return lstPlayers, lstSize, altura, num_elements
+    clubPlayers = me.getValue(mp.get(catalog['clubName_PlayersValue'], club))
+    ordered_map = om.newMap(comparefunction=compare_clubJoinedDate)
+    for player in lt.iterator(clubPlayers):
+        value = lt.getElement(player, 1)
+        om.put(ordered_map, value["club_joined"], player)
+    upperLimit = om.maxKey(ordered_map)
+    lowerLimit = om.select(ordered_map, om.size(ordered_map)-5)
+    lstPlayers = om.values(ordered_map, lowerLimit, upperLimit)
+    lstSize = lt.size(lstPlayers)
+    lstPlayers = sa.sort(lstPlayers, campare_requerimiento1)
+    return lstPlayers, lstSize 
 
 
 #requerimiento 2 - Le suma un segundo a la carga

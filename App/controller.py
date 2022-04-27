@@ -62,7 +62,7 @@ def loadData(catalog, fileName):
         player["player_tags"] = list(player["player_tags"].replace(",", "").split()) if len(player["player_tags"]) > 0 else ["Unknown"]
         model.addPlayer(catalog, player)
         model.addPlayerID_playerValue(catalog, player, contador)
-        model.rbt_clubName_PlayersValue(catalog, player, contador)
+        model.clubName_PlayersValue(catalog, player, contador)
         model.posicionJugador_PlayerValue(catalog, player, contador)
         model.playerTag_PlayerValue(catalog, player, contador)
 
