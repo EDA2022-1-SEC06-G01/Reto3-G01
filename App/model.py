@@ -65,6 +65,9 @@ def newCatalog():
     # requerimiento 3
     catalog['playerTag_PlayerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
+    # Requerimiento 4
+    catalog['playerAge_playerTraits'] = om.newMap(omaptype='BST', comparefunction= compareDates)
+
     return catalog
 
 
@@ -194,6 +197,30 @@ def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
     return lst, lstSize
 
 
+
+
+def playerAge_playerTraits(catalog, player):
+    map = catalog['playerAge_playerTraits']
+    dob = player['dob']
+    date = dob
+    exist = om.contains(map, dob)
+    trait = playerTraits(player)
+    if exist == 0:
+        om.put(map, date, trait)
+    else:
+        om.put(map, date, trait)
+
+    return map
+
+def playerTraits(player):
+    lst = lt.newList(datastructure='SINGLE_LINKED')
+    traits = player['player_traits'].split()
+    for trait in traits:
+        if trait not in traits:
+            a = trait
+            lt.addLast(lst, a)
+    return lst
+
 # ================================
 # Funciones para creacion de datos
 # ================================
@@ -291,6 +318,18 @@ def campare_requerimiento3(player1, player2):
             return player1["potential"] > player2["potential"]
     else:
         return player1["overall"] > player2["overall"]
+
+
+def compareDates(date1, date2):
+    """
+    Compara dos fechas
+    """
+    if (date1 == date2):
+        return 0
+    elif (date1 > date2):
+        return 1
+    else:
+        return -1
 
 # =========================
 # Funciones de ordenamiento

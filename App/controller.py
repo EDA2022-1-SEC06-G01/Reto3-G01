@@ -65,6 +65,7 @@ def loadData(catalog, fileName):
         model.clubName_PlayersValue(catalog, player, contador)
         model.posicionJugador_PlayerValue(catalog, player, contador)
         model.playerTag_PlayerValue(catalog, player, contador)
+        model.playerAge_playerTraits(catalog, player)
 
         contador += 1
     return catalog
