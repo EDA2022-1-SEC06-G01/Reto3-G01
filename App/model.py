@@ -194,6 +194,55 @@ def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
     return lst, lstSize
 
 
+# Requerimiento 5
+def requerimiento5(catalog, segmentos, niveles, propiedad):
+    lstJugadores = catalog["listaGeneral_Datos"]
+    lstSizeJugadores = lt.size(lstJugadores)
+    mapa = om.newMap(omaptype="RBT", comparefunction=compare_generalArboles)
+    for _ in lt.iterator(lstJugadores):
+        valor = lt.getElement(_, 0)
+        existe = om.contains(mapa, valor[propiedad.lower()])
+        if existe == True:
+            llave = me.getValue(om.get(mapa, valor[propiedad.lower()]))
+            llave += 1
+            om.put(mapa, valor[propiedad.lower()], llave)
+        else:
+            om.put(mapa, valor[propiedad.lower()], 1)
+
+    minKey = om.minKey(mapa)
+    maxKey = om.maxKey(mapa)
+    sizeMapa = om.size(mapa)
+    sizeMapa = lt.size(lstJugadores) # verificar
+    razonDeCambio = (maxKey - minKey) / segmentos
+    lstConteo = lt.newList(datastructure="ARRAY_LIST")
+    i = 0
+    min = None
+    max = None
+    while i < 7:
+        if i == 0:
+            min = minKey
+            max = min + razonDeCambio
+            floor_max = om.floor(mapa, max)
+        elif i == 6:
+            min = max
+            max = maxKey
+            floor_max = max
+        else:
+            min = max
+            max = min + razonDeCambio
+            floor_max = om.floor(mapa, max)
+        
+        number = om.values(mapa, min, floor_max)
+        contador = 0
+        for _ in lt.iterator(number):
+            contador += _
+        lt.addLast(lstConteo, contador)
+        i += 1
+    lstMark = lt.newList(datastructure="ARRAY_LIST")
+    for _ in lt.iterator(lstConteo):
+        lt.addLast(lstMark, _ // niveles)
+    return lstSizeJugadores, sizeMapa, razonDeCambio, lstConteo, lstMark, minKey, maxKey
+
 # ================================
 # Funciones para creacion de datos
 # ================================
@@ -256,6 +305,16 @@ def compare_playerPotential(player1, player2):
     else:
         return -1
 
+def compare_generalArboles(player1, player2):
+    """
+    Compara dos crimenes
+    """
+    if (player1 == player2):
+        return 0
+    elif player1 > player2:
+        return 1
+    else:
+        return -1
 
 def compare_ageAndShortName(player1, player2):
     player1 = lt.getElement(player1, 0)
