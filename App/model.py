@@ -25,6 +25,7 @@
  """
 
 
+from re import L
 from xmlrpc.server import list_public_methods
 import config as cf
 from DISClib.ADT import list as lt
@@ -54,7 +55,7 @@ def newCatalog():
     catalog['listaGeneral_Datos'] = lt.newList(datastructure='ARRAY_LIST', cmpfunction=None)
 
     # No sirve para ningun requerimiento hasta ahora
-    catalog['playerID_playerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
+    catalog['addPlayerShortName_playerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
     # requerimiento 1
     catalog['clubName_PlayersValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
@@ -80,10 +81,10 @@ def addPlayer(catalog, player):
     return catalog
 
 # No sirve para ningun requerimiento hasta ahora
-def addPlayerID_playerValue(catalog, player, pos):
-    map = catalog['playerID_playerValue']
+def addPlayerShortName_playerValue(catalog, player, pos):
+    map = catalog['addPlayerShortName_playerValue']
     lst = catalog['listaGeneral_Datos']
-    mp.put(map, player["sofifa_id"], lt.getElement(lst, pos))
+    mp.put(map, player["short_name"], lt.getElement(lst, pos))
 
 # requerimiento 1
 def clubName_PlayersValue(catalog, player, pos):
@@ -131,7 +132,12 @@ def filtroDesempenio(lst, limInferiorDesempenio, limSuperiorDesempenio):
     mapa = om.newMap(comparefunction=compare_playerOverall)
     for player in lt.iterator(lst):
         value = lt.getElement(player, 1)
-        om.put(mapa, value["overall"], player)
+        if om.contains(mapa, value["overall"]) == False:
+            lst = lt.newList(datastructure="ARRAY_LIST")
+            om.put(mapa, value["overall"], lst)
+        else:
+            lst = me.getValue(om.get(mapa, value["overall"]))
+        lt.addLast(lst, player)
     players = om.values(mapa, limInferiorDesempenio, limSuperiorDesempenio)
     return players
 
@@ -139,16 +145,26 @@ def filtroPotential(lst, limInferiorPotencial, limSuperiorPotencial):
     mapa = om.newMap(comparefunction=compare_playerPotential)
     for player in lt.iterator(lst):
         value = lt.getElement(player, 1)
-        om.put(mapa, value["potential"], player)
+        if om.contains(mapa, value["potential"]) == False:
+            lst = lt.newList(datastructure="ARRAY_LIST")
+            om.put(mapa, value["potential"], lst)
+        else:
+            lst = me.getValue(om.get(mapa, value["potential"]))
+        lt.addLast(lst, player)
     players = om.values(mapa, limInferiorPotencial, limSuperiorPotencial)
     return players
 
 # Usado en req 2 y 3
 def filtroSalario(lst, limInferiorSalario, limSuperiorSalario):
-    mapa = om.newMap(comparefunction=compare_playerPotential)
+    mapa = om.newMap(comparefunction=compare_generalArboles)
     for player in lt.iterator(lst):
         value = lt.getElement(player, 1)
-        om.put(mapa, value["wage_eur"], player)
+        if om.contains(mapa, value["wage_eur"]) == False:
+            lst = lt.newList(datastructure="ARRAY_LIST")
+            om.put(mapa, value["wage_eur"], lst)
+        else:
+            lst = me.getValue(om.get(mapa, value["wage_eur"]))
+        lt.addLast(lst, player)
     players = om.values(mapa, limInferiorSalario, limSuperiorSalario)
     return players
 
@@ -162,9 +178,12 @@ def requerimiento2(catalog,
                    limSuperiorSalario):
     lst = me.getValue(mp.get(catalog["posicionJugador_PlayerValue"], playerPosition))
     lst = filtroDesempenio(lst, limInferiorDesempenio, limSuperiorDesempenio)
+    lst = descomprimioListaDeListas(lst)
     lst = filtroPotential(lst, limInferiorPotencial, limSuperiorPotencial)
+    lst = descomprimioListaDeListas(lst)
     lst = filtroSalario(lst, limInferiorSalario, limSuperiorSalario)
-    lst = sa.sort(lst, compare_ageAndShortName)
+    lst = descomprimioListaDeListas(lst)
+    lst = sa.sort(lst, compare_requerimiento2)
     lstSize = lt.size(lst)
     return lst, lstSize
     
@@ -179,16 +198,26 @@ def playerTag_PlayerValue(catalog, player, pos):
         else:
             exist = mp.contains(map, tag)
             if exist:
-                entry = mp.get(map, tag)
-                lst = me.getValue(entry)
+                lst = me.getValue(mp.get(map, tag))
             else:
                 lst = lt.newList(datastructure='ARRAY_LIST')
                 mp.put(map, tag, lst)
             lt.addLast(lst, lt.getElement(catalog['listaGeneral_Datos'], pos))
 
+def descomprimioListaDeListas(lst):
+    lstNueva = lt.newList(datastructure="ARRAY_LIST")
+    for _ in range(lt.size(lst)):
+        lista1 = lt.getElement(lst, _ + 1)
+        for i in range(lt.size(lista1)):
+            lt.addLast(lstNueva, lt.getElement(lista1, i + 1))
+    return lstNueva
+
 def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
     lst = me.getValue(mp.get(catalog["playerTag_PlayerValue"], playerTag))
     lst = filtroSalario(lst, limInferiorSalario, limSuperiorSalario)
+
+    lst = descomprimioListaDeListas(lst)
+    
     lstSize = lt.size(lst)
     lst = sa.sort(lst, campare_requerimiento3)
     return lst, lstSize
@@ -242,6 +271,18 @@ def requerimiento5(catalog, segmentos, niveles, propiedad):
     for _ in lt.iterator(lstConteo):
         lt.addLast(lstMark, _ // niveles)
     return lstSizeJugadores, sizeMapa, razonDeCambio, lstConteo, lstMark, minKey, maxKey
+
+
+def requerimiento6(catalog, playerShortName, posicion):
+    posicionJugadores = catalog["posicionJugador_PlayerValue"]
+    shortName_PlayerValue = catalog["addPlayerShortName_playerValue"]
+    jugadorPorRemplazar = me.getValue(mp.get(shortName_PlayerValue, playerShortName))
+    lstPosicionJugadores = me.getValue(mp.get(posicionJugadores, posicion))
+    print(jugadorPorRemplazar)
+    print()
+    print(lstPosicionJugadores)
+    input("llegamos al 6")
+
 
 # ================================
 # Funciones para creacion de datos
@@ -316,13 +357,22 @@ def compare_generalArboles(player1, player2):
     else:
         return -1
 
-def compare_ageAndShortName(player1, player2):
+def compare_requerimiento2(player1, player2):
     player1 = lt.getElement(player1, 0)
     player2 = lt.getElement(player2, 0)
-    if player1["age"] == player2["age"]:
-        return player1["short_name"] > player2["short_name"]
+    if player1["overall"] == player2["overall"]:
+        if player1["potential"] == player2["potential"]:
+            if player1["wage_eur"] == player2["wage_eur"]:
+                if player1["age"] == player2["age"]:
+                    return player1["short_name"] > player2["short_name"]
+                else:
+                    return player1["age"] > player2["age"]
+            else:
+                return player1["wage_eur"] > player2["wage_eur"]
+        else:
+            return player1["potential"] > player2["potential"]
     else:
-        return player1["age"] > player2["age"]
+        return player1["overall"] > player2["overall"]
 
 
 def campare_requerimiento1(player1, player2):
@@ -343,13 +393,16 @@ def campare_requerimiento1(player1, player2):
 def campare_requerimiento3(player1, player2):
     player1 = lt.getElement(player1, 0)
     player2 = lt.getElement(player2, 0)
-    if player1["overall"] == player2["overall"]:
-        if player1["potential"] == player2["potential"]:
-            return player1["long_name"] > player2["long_name"]
+    if player1["wage_eur"] == player2["wage_eur"]:
+        if player1["overall"] == player2["overall"]:
+            if player1["potential"] == player2["potential"]:
+                return player1["long_name"] > player2["long_name"]
+            else:
+                return player1["potential"] > player2["potential"]
         else:
-            return player1["potential"] > player2["potential"]
+            return player1["overall"] > player2["overall"]
     else:
-        return player1["overall"] > player2["overall"]
+        return player1["wage_eur"] > player2["wage_eur"]
 
 # =========================
 # Funciones de ordenamiento

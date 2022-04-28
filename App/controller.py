@@ -62,7 +62,7 @@ def loadData(catalog, fileName):
         player["player_tags"] = list(player["player_tags"].replace(",", "").split()) if len(player["player_tags"]) > 0 else ["Unknown"]
         player["player_traits"] = list(player["player_traits"].replace(", ", ",").split(","))
         model.addPlayer(catalog, player)
-        model.addPlayerID_playerValue(catalog, player, contador)
+        model.addPlayerShortName_playerValue(catalog, player, contador)
         model.clubName_PlayersValue(catalog, player, contador)
         model.posicionJugador_PlayerValue(catalog, player, contador)
         model.playerTag_PlayerValue(catalog, player, contador)
@@ -99,6 +99,9 @@ def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
 
 def requerimiento5(catalog, segmentos, niveles, propiedad):
     return model.requerimiento5(catalog, segmentos, niveles, propiedad)
+
+def requerimiento6(catalog, playerShortName, posicion):
+    return model.requerimiento6(catalog, playerShortName, posicion)
 
 # =====================
 # Funciones de consulta

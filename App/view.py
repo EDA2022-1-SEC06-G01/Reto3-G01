@@ -376,7 +376,11 @@ def menuPrincipal():
 
 
             elif int(inputs[0]) == 6:
-                
+                #playerShortName = input("Introduzca el nombre del jugador que desea consultar: ")
+                #posicion = input("Ingrese la posicion del jugador que desea consultar: ")
+                playerShortName = "R. Thomas"
+                posicion = "CB"
+                controller.requerimiento6(catalog, playerShortName, posicion)
                 input("\n> Hundir cualquier tecla para continuar...")
 
 
