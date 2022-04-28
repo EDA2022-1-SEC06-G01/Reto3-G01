@@ -97,6 +97,9 @@ def requerimiento2(catalog,
 def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
     return model.requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag)
 
+def requerimiento5(catalog, segmentos, niveles, propiedad):
+    return model.requerimiento5(catalog, segmentos, niveles, propiedad)
+
 # =====================
 # Funciones de consulta
 # =====================

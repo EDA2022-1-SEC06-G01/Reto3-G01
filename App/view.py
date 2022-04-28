@@ -250,6 +250,47 @@ def printRequerimiento3(lstPlayers, lstSize):
     return print(table.get_string())
 
 
+def printRequerimiento5(propiedad, segmentos, niveles, lstSizeJugadores, sizeMapa, razonDeCambio, lstConteo, lstMark, minKey, maxKey):
+    print("=========== Req No. 5 Inputs ===========")
+    print(f"Count map (histogram) of: '{propiedad}'")
+    print(f"Number of bins: {segmentos}")
+    print(f"Player scale: {niveles}")
+    print()
+    print(f"There are {lstSizeJugadores} player on record.")
+    print(f"The histogram counts {sizeMapa} players.")
+    print(f"{propiedad} Histogram with {segmentos} bins and '{niveles}' players per lvl mark.")
+    table = PrettyTable()
+    table.field_names = ["bin", "count", "lvl", "mark"]
+    for _ in range(segmentos):
+        elementos = lt.getElement(lstConteo, _ + 1)
+        marks = lt.getElement(lstMark, _ + 1)
+        marks_string = "*" * marks
+        if _ == 0:
+            minKey_act = minKey
+            maxKey_act = minKey_act + razonDeCambio
+            table.add_row([f"({round(minKey_act, 3)}, {round(maxKey_act, 3)}]",
+                           elementos,
+                           marks,
+                           marks_string
+                        ])
+        elif _ == 6:
+            minKey_act = maxKey_act
+            maxKey_act = maxKey
+            table.add_row([f"({round(minKey_act, 3)}, {round(maxKey_act, 3)}]",
+                           elementos,
+                           marks,
+                           marks_string
+                        ])
+        else:
+            minKey_act = maxKey_act
+            maxKey_act = minKey_act + razonDeCambio
+            table.add_row([f"({round(minKey_act, 3)}, {round(maxKey_act, 3)}]",
+                           elementos,
+                           marks,
+                           marks_string
+                        ])
+    return print(table.get_string())
+
 catalog = None
 
 """
@@ -321,6 +362,15 @@ def menuPrincipal():
 
 
             elif int(inputs[0]) == 5:
+                #propiedad = input("Ingrese la propiedad que desea consultar: ")
+                #segmentos = int(input("Ingrese cantidad de segmentos (bins) que desea usar: "))
+                #niveles = int(input("Ingrese la cantidad de niveles que desea usar: "))
+                propiedad = "overall"
+                segmentos = 7
+                niveles = 5
+                lstSizeJugadores, sizeMapa, razonDeCambio, lstConteo, lstMark, minKey, maxKey = controller.requerimiento5(catalog, segmentos, niveles, propiedad)
+                printRequerimiento5(propiedad, segmentos, niveles, lstSizeJugadores, sizeMapa, razonDeCambio, lstConteo, lstMark, minKey, maxKey)
+                
                 
                 input("\n> Hundir cualquier tecla para continuar...")
 
