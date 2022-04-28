@@ -60,6 +60,7 @@ def loadData(catalog, fileName):
         player["potential"] = float(player["potential"])
         player["wage_eur"] = float(player["wage_eur"])
         player["player_tags"] = list(player["player_tags"].replace(",", "").split()) if len(player["player_tags"]) > 0 else ["Unknown"]
+        player["player_traits"] = list(player["player_traits"].replace(", ", ",").split(","))   
         model.addPlayer(catalog, player)
         model.addPlayerID_playerValue(catalog, player, contador)
         model.clubName_PlayersValue(catalog, player, contador)

@@ -33,6 +33,7 @@ from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.ADT import orderedmap as om
 assert cf
+import datetime
 import os
 
 """
@@ -66,7 +67,7 @@ def newCatalog():
     catalog['playerTag_PlayerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
     # Requerimiento 4
-    catalog['playerAge_playerTraits'] = om.newMap(omaptype='BST', comparefunction= compareDates)
+    catalog['playerAge_playerTraits'] = mp.newMap(numelements=2000, maptype='PROBING', loadfactor=0.5, comparefunction=None)
 
     return catalog
 
@@ -202,26 +203,29 @@ def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
 def playerAge_playerTraits(catalog, player):
     """
     """
-    tree = catalog['playerAge_playerTraits']
+    map = catalog['playerAge_playerTraits']
+    traits = player['player_traits']
+    if traits == []:
+        traits = "Unknown"
     dob = player['dob']
-    exist = om.get(tree, dob)
+    i = 0
+
+    while i < len(traits):
+        exist = mp.contains(map, traits[i])
+        if exist == False:
+            entry = newDob(map, traits[i])
+            mp.put(map, traits[i], entry)
+            
+       #else:
+          #  entry = me.getValue(mp.get(traits[i], player['player_traits']))      
+        i += 1
+    return catalog
     
-    if exist is None:
-        entry = newDob()
-        om.put(tree, dob.date(), entry)
-    else:
-        entry = me.getValue(exist)
-    playerTraits(entry, player)
-
-    return map
-
-def newDob():
+def newDob(entry, player):
     """
     """
     entry = {'player_traits': None}
-    entry['player_traits'] = mp.newMap(numelements=7,
-                                        maptype='PROBING',
-                                        loadfactor=0.5)
+    entry['player_traits'] = player
     return entry
 
 def playerTraits(entry, player):
@@ -229,7 +233,7 @@ def playerTraits(entry, player):
     """
     lst = lt.newList(datastructure='SINGLE_LINKED')
     traitsMap = entry['player_traits']
-    traits = player['player_traits']
+    traits = player['player_traits'].split(",")
     i = 0
     while i < len(traits):
         exist = mp.contains(entry, traits[i])
