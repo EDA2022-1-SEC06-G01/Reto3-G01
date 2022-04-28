@@ -97,6 +97,11 @@ def requerimiento2(catalog,
 def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
     return model.requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag)
 
+"""
+def requerimiento(catalog, lim_inf, lim_sup, trait):
+    range = om
+    return
+"""
 # =====================
 # Funciones de consulta
 # =====================

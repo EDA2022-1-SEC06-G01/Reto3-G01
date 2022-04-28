@@ -316,6 +316,12 @@ def menuPrincipal():
 
 
             elif int(inputs[0]) == 4:
+
+                lim_inf = input("Ingrese el límite inferior de la fecha de nacimiento del jugador: ")
+                lim_sup = input("Ingrese el límite superior de la fecha de nacimiento del jugador: ")
+                trait = input("Ingrese una de las características que identifican a los jugadores ")
+
+                
                 
                 input("\n> Hundir cualquier tecla para continuar...")
 
@@ -338,6 +344,8 @@ def menuPrincipal():
                 controller.loadData(catalog, fileSize)
                 lstPlayers, lstSize = controller.getPrimerosCinco_UltimosCinco(catalog["listaGeneral_Datos"])
                 printPrimerosCinco_UltimosCinco_Players(lstPlayers, lstSize)
+                print(catalog['playerAge_playerTraits'])
+                #print(catalog['clubName_PlayersValue'])
                 print(time.process_time() - start)
                 input("\n>Hundir cualquier numero para continuar...")
             

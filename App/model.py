@@ -197,30 +197,55 @@ def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
     return lst, lstSize
 
 
-
+#Requerimiento 4
 
 def playerAge_playerTraits(catalog, player):
-    map = catalog['playerAge_playerTraits']
+    """
+    """
+    tree = catalog['playerAge_playerTraits']
     dob = player['dob']
-    date = dob
-    exist = om.contains(map, dob)
-    trait = playerTraits(player)
-    if exist == 0:
-        om.put(map, date, trait)
+    exist = om.get(tree, dob)
+    
+    if exist is None:
+        entry = newDob()
+        om.put(tree, dob.date(), entry)
     else:
-        om.put(map, date, trait)
+        entry = me.getValue(exist)
+    playerTraits(entry, player)
 
     return map
 
-def playerTraits(player):
-    lst = lt.newList(datastructure='SINGLE_LINKED')
-    traits = player['player_traits'].split()
-    for trait in traits:
-        if trait not in traits:
-            a = trait
-            lt.addLast(lst, a)
-    return lst
+def newDob():
+    """
+    """
+    entry = {'player_traits': None}
+    entry['player_traits'] = mp.newMap(numelements=7,
+                                        maptype='PROBING',
+                                        loadfactor=0.5)
+    return entry
 
+def playerTraits(entry, player):
+    """
+    """
+    lst = lt.newList(datastructure='SINGLE_LINKED')
+    traitsMap = entry['player_traits']
+    traits = player['player_traits']
+    i = 0
+    while i < len(traits):
+        exist = mp.contains(entry, traits[i])
+        if exist == False:
+            lt.addLast(lst, traits)
+        i += 1
+    t = mp.put(entry, traitsMap, lst)
+            
+    return t
+"""
+def requerimiento4(catalog, lim_inf, lim_sup,trait):
+    tree = catalog['playerAge_playerTraits']
+    floor = om.floor(tree, lim_inf)
+
+    return
+"""
 # ================================
 # Funciones para creacion de datos
 # ================================
