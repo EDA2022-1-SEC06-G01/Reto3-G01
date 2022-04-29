@@ -107,6 +107,7 @@ def requerimiento1(catalog, club):
     
     numeroAdquisiciones = lt.size(clubPlayers)
     ligaALaQuePertenece = lt.getElement(lt.getElement(clubPlayers, 1), 1)["league_name"]
+    league_level = lt.getElement(lt.getElement(clubPlayers, 1), 1)["league_name"]
 
     lst = om.valueSet(ordered_map)
     lst = descomprimioListaDeListas(lst)
@@ -114,7 +115,7 @@ def requerimiento1(catalog, club):
 
     lst = sa.sort(lst, campare_requerimiento1)
 
-    return lst, numeroAdquisiciones, ligaALaQuePertenece, tamanioMatrix
+    return lst, numeroAdquisiciones, ligaALaQuePertenece, tamanioMatrix, league_level
 
 
 #requerimiento 2 - Le suma un segundo a la carga
@@ -189,7 +190,8 @@ def requerimiento2(catalog,
     lst = descomprimioListaDeListas(lst)
     lst = sa.sort(lst, compare_requerimiento2)
     lstSize = lt.size(lst)
-    return lst, lstSize
+    totalPlayerAmmount = lt.size(catalog["listaGeneral_Datos"])
+    return lst, lstSize, totalPlayerAmmount
     
 
 # Requerimiento 3 - Basado en req 2 - Incrementa 0.8 seg

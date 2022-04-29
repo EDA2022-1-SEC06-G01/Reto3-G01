@@ -24,6 +24,7 @@ import config as cf
 import model
 import csv
 from datetime import datetime
+from DISClib.ADT import list as lt
 
 
 """
@@ -66,7 +67,8 @@ def loadData(catalog, fileName):
         model.playerTag_PlayerValue(catalog, player, contador)
 
         contador += 1
-    return catalog
+    playerAmmount = lt.size(catalog["listaGeneral_Datos"])
+    return playerAmmount
 
 # =====================
 # Funciones de requerimientos
