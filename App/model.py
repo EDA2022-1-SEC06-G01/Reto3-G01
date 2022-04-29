@@ -35,6 +35,7 @@ from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.ADT import orderedmap as om
 assert cf
 import os
+import time
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -101,16 +102,19 @@ def clubName_PlayersValue(catalog, player, pos):
 
 def requerimiento1(catalog, club):
     clubPlayers = me.getValue(mp.get(catalog['clubName_PlayersValue'], club))
-    ordered_map = om.newMap(comparefunction=compare_clubJoinedDate)
-    for player in lt.iterator(clubPlayers):
-        value = lt.getElement(player, 1)
-        om.put(ordered_map, value["club_joined"], player)
-    upperLimit = om.maxKey(ordered_map)
-    lowerLimit = om.select(ordered_map, om.size(ordered_map)-5)
-    lstPlayers = om.values(ordered_map, lowerLimit, upperLimit)
-    lstSize = lt.size(lstPlayers)
-    lstPlayers = sa.sort(lstPlayers, campare_requerimiento1)
-    return lstPlayers, lstSize 
+
+    ordered_map = CrearArbolBinario(clubPlayers, "club_joined")
+    
+    numeroAdquisiciones = lt.size(clubPlayers)
+    ligaALaQuePertenece = lt.getElement(lt.getElement(clubPlayers, 1), 1)["league_name"]
+
+    lst = om.valueSet(ordered_map)
+    lst = descomprimioListaDeListas(lst)
+    tamanioMatrix = lt.size(lst)
+
+    lst = sa.sort(lst, campare_requerimiento1)
+
+    return lst, numeroAdquisiciones, ligaALaQuePertenece, tamanioMatrix
 
 
 #requerimiento 2 - Le suma un segundo a la carga
@@ -278,6 +282,21 @@ def requerimiento6(catalog, playerShortName, posicion):
     shortName_PlayerValue = catalog["addPlayerShortName_playerValue"]
     jugadorPorRemplazar = me.getValue(mp.get(shortName_PlayerValue, playerShortName))
     lstPosicionJugadores = me.getValue(mp.get(posicionJugadores, posicion))
+    mapaPotential = om.newMap(omaptype="RBT", comparefunction=compare_generalArboles)
+    mapaAge = om.newMap(omaptype="RBT", comparefunction=compare_generalArboles)
+    mapaHeight = om.newMap(omaptype="RBT", comparefunction=compare_generalArboles)
+    mapaPosition = om.newMap(omaptype="RBT", comparefunction=compare_generalArboles)
+    for _ in lt.iterator(lstPosicionJugadores):
+        value = lt.getElement(_, 1)
+        existe = om.contains(mapaPotential,value["potential"])
+        if existe == True:
+            lst = me.getValue(om.get(mapaPotential, value["potential"]))
+        else:
+            lst = lt.newList(datastructure="ARRAY_LIST")
+            om.put(mapaPotential, value["potential"], lst)
+        lt.addLast(lst, _)
+
+
     print(jugadorPorRemplazar)
     print()
     print(lstPosicionJugadores)
@@ -288,6 +307,17 @@ def requerimiento6(catalog, playerShortName, posicion):
 # Funciones para creacion de datos
 # ================================
 
+def CrearArbolBinario(lst, llave):
+    mapa = om.newMap(comparefunction=compare_generalArboles)
+    for player in lt.iterator(lst):
+        value = lt.getElement(player, 1)
+        if om.contains(mapa, value[llave]) == False:
+            lst_new = lt.newList(datastructure="ARRAY_LIST")
+            om.put(mapa, value[llave], lst_new)
+        else:
+            lst_new = me.getValue(om.get(mapa, value[llave]))
+        lt.addLast(lst_new, player)
+    return mapa
 
 # =====================
 # Funciones de consulta
@@ -358,8 +388,8 @@ def compare_generalArboles(player1, player2):
         return -1
 
 def compare_requerimiento2(player1, player2):
-    player1 = lt.getElement(player1, 0)
-    player2 = lt.getElement(player2, 0)
+    player1 = lt.getElement(player1, 1)
+    player2 = lt.getElement(player2, 1)
     if player1["overall"] == player2["overall"]:
         if player1["potential"] == player2["potential"]:
             if player1["wage_eur"] == player2["wage_eur"]:
@@ -376,18 +406,23 @@ def compare_requerimiento2(player1, player2):
 
 
 def campare_requerimiento1(player1, player2):
-    player1 = lt.getElement(player1, 0)
-    player2 = lt.getElement(player2, 0)
-    if player1["club_joined"] == player2["club_joined"]:
-        if player1["age"] == player2["age"]:
-            if player1["dob"] == player2["dob"]:
-                return player1["short_name"] > player2["short_name"]
+    player1 = lt.getElement(player1, 1)
+    player2 = lt.getElement(player2, 1)
+    clubJoined1 = time.strptime(player1['club_joined'], "%Y-%m-%d")
+    clubJoined2 = time.strptime(player2['club_joined'], "%Y-%m-%d")
+    dob1 = time.strptime(player1['dob'], "%Y-%m-%d")
+    dob2 = time.strptime(player2['dob'], "%Y-%m-%d")
+    
+    if clubJoined1 == clubJoined2:
+        if player1['age'] == player2['age']:
+            if dob1 == dob2:
+                return player1['short_name'] > player2['short_name']
             else:
-                return player1["dob"] > player2["dob"]
+                return dob1 > dob2
         else:
-            return player1["age"] > player2["age"]
+            return player1['age'] > player2['age']
     else:
-        return player1["club_joined"] > player2["club_joined"]
+        return clubJoined1 > clubJoined2
 
 
 def campare_requerimiento3(player1, player2):

@@ -53,8 +53,6 @@ def loadData(catalog, fileName):
                                 delimiter=",")
     contador = 1
     for player in input_file:
-        player["club_joined"] = datetime.strptime(player["club_joined"], '%Y-%m-%d')
-        player["dob"] = datetime.strptime(player["dob"], '%Y-%m-%d')
         player["player_positions"] = list(player["player_positions"].replace(",", "").split())
         player["overall"] = float(player["overall"])
         player["potential"] = float(player["potential"])
