@@ -389,7 +389,6 @@ def menuPrincipal():
 
 
             elif int(inputs[0]) == 2:
-                '''
                 playerPosition = input("Por favor introducir la posicion de el jugador: ")
                 limInferiorDesempenio = float(input("Por favor introducir el limite inferior del desempenio: "))
                 limSuperiorDesempenio = float(input("Por favor introducir el limite superior del desempenio: "))
@@ -397,14 +396,6 @@ def menuPrincipal():
                 limSuperiorPotencial = float(input("Por favor introducir el limite superior del potencial: "))
                 limInferiorSalario = float(input("Por favor introducir el limite superior del salario: "))
                 limSuperiorSalario = float(input("Por favor introducir el limite superior del salario: "))
-                '''
-                playerPosition = "CB"
-                limInferiorDesempenio = 55
-                limSuperiorDesempenio = 71
-                limInferiorPotencial = 33
-                limSuperiorPotencial = 90
-                limInferiorSalario = 950
-                limSuperiorSalario = 13000
                 lstPlayers, lstSize, totalPlayerAmmount = controller.requerimiento2(catalog,
                                                                 playerPosition,
                                                                 limInferiorDesempenio,
@@ -418,14 +409,9 @@ def menuPrincipal():
             
 
             elif int(inputs[0]) == 3:
-                '''
                 playerTag = input("Por favor introducir el tag que desea consultar: ")
                 limInferiorSalario = float(input("Por favor introducir el limite superior del salario: "))
                 limSuperiorSalario = float(input("Por favor introducir el limite superior del salario: "))
-                '''
-                playerTag = "#Tactician"
-                limInferiorSalario = 10000
-                limSuperiorSalario = 87000
                 lstPlayers, lstSize = controller.requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag)
                 printRequerimiento3(lstPlayers, lstSize, playerTag, limInferiorSalario, limSuperiorSalario, playerAmmount)
                 input("\n> Hundir cualquier tecla para continuar...")
@@ -437,12 +423,9 @@ def menuPrincipal():
 
 
             elif int(inputs[0]) == 5:
-                #propiedad = input("Ingrese la propiedad que desea consultar: ")
-                #segmentos = int(input("Ingrese cantidad de segmentos (bins) que desea usar: "))
-                #niveles = int(input("Ingrese la cantidad de niveles que desea usar: "))
-                propiedad = "overall"
-                segmentos = 7
-                niveles = 5
+                propiedad = input("Ingrese la propiedad que desea consultar: ")
+                segmentos = int(input("Ingrese cantidad de segmentos (bins) que desea usar: "))
+                niveles = int(input("Ingrese la cantidad de niveles que desea usar: "))
                 lstSizeJugadores, sizeMapa, razonDeCambio, lstConteo, lstMark, minKey, maxKey = controller.requerimiento5(catalog, segmentos, niveles, propiedad)
                 printRequerimiento5(propiedad, segmentos, niveles, lstSizeJugadores, sizeMapa, razonDeCambio, lstConteo, lstMark, minKey, maxKey)
                 
@@ -451,10 +434,8 @@ def menuPrincipal():
 
 
             elif int(inputs[0]) == 6:
-                #playerShortName = input("Introduzca el nombre del jugador que desea consultar: ")
-                #posicion = input("Ingrese la posicion del jugador que desea consultar: ")
-                playerShortName = "R. Thomas"
-                posicion = "CB"
+                playerShortName = input("Introduzca el nombre del jugador que desea consultar: ")
+                posicion = input("Ingrese la posicion del jugador que desea consultar: ")
                 controller.requerimiento6(catalog, playerShortName, posicion)
                 input("\n> Hundir cualquier tecla para continuar...")
 
