@@ -67,7 +67,7 @@ def newCatalog():
     catalog['playerTag_PlayerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
     # Requerimiento 4
-    catalog['playerAge_playerTraits'] = mp.newMap(numelements=2000, maptype='PROBING', loadfactor=0.5, comparefunction=None)
+    catalog['playerAge_playerTraits'] = mp.newMap(numelements=31, maptype='PROBING', loadfactor=0.5, comparefunction=None)
 
     return catalog
 
@@ -200,56 +200,46 @@ def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
 
 #Requerimiento 4
 
-def playerAge_playerTraits(catalog, player):
+def playerAge_playerTraits(catalog, player, pos):
     """
     """
     map = catalog['playerAge_playerTraits']
     traits = player['player_traits']
-    if traits == []:
-        traits = "Unknown"
-    dob = player['dob']
+   # if traits == []:
+      #  traits = "Unknown"
     i = 0
 
     while i < len(traits):
         exist = mp.contains(map, traits[i])
-        if exist == False:
-            entry = newDob(map, traits[i])
-            mp.put(map, traits[i], entry)
+        if exist == True:
+           entry = mp.get(map, traits[i])
+           lst = me.getValue(entry)
             
-       #else:
-          #  entry = me.getValue(mp.get(traits[i], player['player_traits']))      
+        else:
+           lst = lt.newList('ARRAY_LIST') 
+           mp.put(map, traits[i], lst)
+        lt.addLast(lst, lt.getElement(catalog['listaGeneral_Datos'], pos))
         i += 1
+
     return catalog
+
+def arbol_req4(lst, limInferiorDob, limSuperiorDob):
+    mapa = om.newMap(comparefunction=compareDates)
+    for player in lt.iterator(lst):
+        value = lt.getElement(player, 1)
+        om.put(mapa, value["dob"], player)
+    players = om.values(mapa, limInferiorDob, limSuperiorDob)
+    return players
     
-def newDob(entry, player):
-    """
-    """
-    entry = {'player_traits': None}
-    entry['player_traits'] = player
-    return entry
+def requerimiento4(catalog, lim_inf, lim_sup, trait):
+    pareja = mp.get(catalog['playerAge_playerTraits'],trait)
+    lst = me.getValue(pareja)
+    lst = arbol_req4(lst, lim_inf, lim_sup)
+    lstSize = lt.size(lst)
+    lst = sa.sort(lst, campare_requerimiento3)
+    return lst, lstSize
+    
 
-def playerTraits(entry, player):
-    """
-    """
-    lst = lt.newList(datastructure='SINGLE_LINKED')
-    traitsMap = entry['player_traits']
-    traits = player['player_traits'].split(",")
-    i = 0
-    while i < len(traits):
-        exist = mp.contains(entry, traits[i])
-        if exist == False:
-            lt.addLast(lst, traits)
-        i += 1
-    t = mp.put(entry, traitsMap, lst)
-            
-    return t
-"""
-def requerimiento4(catalog, lim_inf, lim_sup,trait):
-    tree = catalog['playerAge_playerTraits']
-    floor = om.floor(tree, lim_inf)
-
-    return
-"""
 # ================================
 # Funciones para creacion de datos
 # ================================
@@ -348,14 +338,13 @@ def campare_requerimiento3(player1, player2):
     else:
         return player1["overall"] > player2["overall"]
 
-
 def compareDates(date1, date2):
     """
     Compara dos fechas
     """
     if (date1 == date2):
         return 0
-    elif (date1 > date2):
+    elif date1 > date2:
         return 1
     else:
         return -1

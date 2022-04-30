@@ -66,7 +66,7 @@ def loadData(catalog, fileName):
         model.clubName_PlayersValue(catalog, player, contador)
         model.posicionJugador_PlayerValue(catalog, player, contador)
         model.playerTag_PlayerValue(catalog, player, contador)
-        model.playerAge_playerTraits(catalog, player)
+        model.playerAge_playerTraits(catalog, player, contador)
 
         contador += 1
     return catalog
@@ -98,11 +98,12 @@ def requerimiento2(catalog,
 def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
     return model.requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag)
 
-"""
-def requerimiento(catalog, lim_inf, lim_sup, trait):
-    range = om
-    return
-"""
+
+def requerimiento4(catalog, lim_inf, lim_sup, trait):
+    lim_inf = datetime.strptime(lim_inf, '%Y-%m-%d')
+    lim_sup = datetime.strptime(lim_sup, '%Y-%m-%d')
+    return model.requerimiento4(catalog, lim_inf, lim_sup, trait)
+
 # =====================
 # Funciones de consulta
 # =====================
