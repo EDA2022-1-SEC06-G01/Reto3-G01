@@ -433,7 +433,6 @@ def menuPrincipal():
 
 
             if int(inputs[0]) == 1:
-                #club = input("Por favor introduce el club que deseas buscar")
                 club = "Royal Charleroi S.C."
                 matrixDeJugadores, numeroAdquisiciones, ligaALaQuePertenece, tamanioMatrix, league_level  = controller.requerimiento1(catalog, club)
                 printRequerimiento1(club, matrixDeJugadores, numeroAdquisiciones, ligaALaQuePertenece, tamanioMatrix, league_level)
