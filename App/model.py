@@ -67,6 +67,9 @@ def newCatalog():
     # requerimiento 3
     catalog['playerTag_PlayerValue'] = mp.newMap(numelements=19000, maptype="PROBING", loadfactor=0.5, comparefunction=None)
 
+    # Requerimiento 4
+    catalog['playerAge_playerTraits'] = mp.newMap(numelements=31, maptype='PROBING', loadfactor=0.5, comparefunction=None)
+
     return catalog
 
 
@@ -228,6 +231,46 @@ def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
     lst = sa.sort(lst, campare_requerimiento3)
     return lst, lstSize
 
+#Requerimiento 4
+
+def playerAge_playerTraits(catalog, player, pos):
+    """
+    """
+    map = catalog['playerAge_playerTraits']
+    traits = player['player_traits']
+   # if traits == []:
+      #  traits = "Unknown"
+    i = 0
+
+    while i < len(traits):
+        exist = mp.contains(map, traits[i])
+        if exist == True:
+           entry = mp.get(map, traits[i])
+           lst = me.getValue(entry)
+            
+        else:
+           lst = lt.newList('ARRAY_LIST') 
+           mp.put(map, traits[i], lst)
+        lt.addLast(lst, lt.getElement(catalog['listaGeneral_Datos'], pos))
+        i += 1
+
+    return catalog
+
+def requerimiento4(catalog, lim_inf, lim_sup, trait):
+    pareja = mp.get(catalog['playerAge_playerTraits'],trait)
+    lst = me.getValue(pareja)
+    lst = arbol_req4(lst, lim_inf, lim_sup)
+    lstSize = lt.size(lst)
+    lst = sa.sort(lst, campare_requerimiento3)
+    return lst, lstSize
+
+def arbol_req4(lst, limInferiorDob, limSuperiorDob):
+    mapa = om.newMap(comparefunction=compareDates)
+    for player in lt.iterator(lst):
+        value = lt.getElement(player, 1)
+        om.put(mapa, value["dob"], player)
+    players = om.values(mapa, limInferiorDob, limSuperiorDob)
+    return players
 
 # Requerimiento 5
 def requerimiento5(catalog, segmentos, niveles, propiedad):
@@ -440,6 +483,17 @@ def campare_requerimiento3(player1, player2):
             return player1["overall"] > player2["overall"]
     else:
         return player1["wage_eur"] > player2["wage_eur"]
+
+def compareDates(date1, date2):
+    """
+    Compara dos fechas
+    """
+    if (date1 == date2):
+        return 0
+    elif date1 > date2:
+        return 1
+    else:
+        return -1
 
 # =========================
 # Funciones de ordenamiento

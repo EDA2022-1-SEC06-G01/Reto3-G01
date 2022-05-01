@@ -57,6 +57,7 @@ def loadData(catalog, fileName):
         player["player_positions"] = list(player["player_positions"].replace(",", "").split())
         player["overall"] = float(player["overall"])
         player["potential"] = float(player["potential"])
+        player["club_contract_valid_until"] = datetime.strptime(player["club_contract_valid_until"][0:-2], "%Y")
         player["wage_eur"] = float(player["wage_eur"])
         player["player_tags"] = list(player["player_tags"].replace(",", "").split()) if len(player["player_tags"]) > 0 else ["Unknown"]
         player["player_traits"] = list(player["player_traits"].replace(", ", ",").split(","))
@@ -65,6 +66,7 @@ def loadData(catalog, fileName):
         model.clubName_PlayersValue(catalog, player, contador)
         model.posicionJugador_PlayerValue(catalog, player, contador)
         model.playerTag_PlayerValue(catalog, player, contador)
+        model.playerAge_playerTraits(catalog, player, contador)
 
         contador += 1
     playerAmmount = lt.size(catalog["listaGeneral_Datos"])
@@ -99,6 +101,11 @@ def requerimiento3(catalog, limInferiorSalario, limSuperiorSalario, playerTag):
 
 def requerimiento5(catalog, segmentos, niveles, propiedad):
     return model.requerimiento5(catalog, segmentos, niveles, propiedad)
+
+def requerimiento4(catalog, lim_inf, lim_sup, trait):
+    lim_inf = datetime.strptime(lim_inf, '%Y-%m-%d')
+    lim_sup = datetime.strptime(lim_sup, '%Y-%m-%d')
+    return model.requerimiento4(catalog, lim_inf, lim_sup, trait)
 
 def requerimiento6(catalog, playerShortName, posicion):
     return model.requerimiento6(catalog, playerShortName, posicion)

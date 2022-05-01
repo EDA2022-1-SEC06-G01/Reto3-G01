@@ -323,6 +323,50 @@ def printRequerimiento3(lstPlayers, lstSize, tag, limInf, limSup, playerAmmount)
                        ])
     return print(table.get_string())
 
+def printRequerimiento4(players, size):
+    table = PrettyTable()
+    table.field_names = ["Dob", "Nombre Completo", "Edad", "Nacionalidad", "Valor de contrato", "Salario", "Club", "Liga", "Potencial", "Desempenio", "Posiciones del jugador", "Comentarios", "Etiquetas"]
+    table.max_width = 15
+    table.max_table_width = 100
+    for i in range(1, 4):
+        player = controller.lstGet(players, i)
+        player = controller.lstGet(player, 0)
+        table.add_row([player["dob"],
+                       player["long_name"],
+                       player["age"],
+                       player["nationality_name"],
+                       player["value_eur"],
+                       player["wage_eur"],
+                       player["club_name"],
+                       player["league_name"],
+                       player["potential"],
+                       player["overall"],
+                       player["player_positions"],
+                       player["player_traits"],
+                       player["player_tags"]
+                       ])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    for i in range(size - 2, size + 1):
+        player = controller.lstGet(players, i)
+        player = controller.lstGet(player, 0)
+        table.add_row([player["dob"],
+                       player["long_name"],
+                       player["age"],
+                       player["nationality_name"],
+                       player["value_eur"],
+                       player["wage_eur"],
+                       player["club_name"],
+                       player["league_name"],
+                       player["potential"],
+                       player["overall"],
+                       player["player_positions"],
+                       player["player_traits"],
+                       player["player_tags"]
+                       ])
+    return print(table.get_string())
+
 
 def printRequerimiento5(propiedad, segmentos, niveles, lstSizeJugadores, sizeMapa, razonDeCambio, lstConteo, lstMark, minKey, maxKey):
     print("=========== Req No. 5 Inputs ===========")
@@ -418,7 +462,12 @@ def menuPrincipal():
 
 
             elif int(inputs[0]) == 4:
-                
+
+                lim_inf = input("Ingrese el límite inferior de la fecha de nacimiento del jugador: ")
+                lim_sup = input("Ingrese el límite superior de la fecha de nacimiento del jugador: ")
+                trait = input("Ingrese una de las características que identifican a los jugadores: ")
+                lst, size = controller.requerimiento4(catalog, lim_inf, lim_sup, trait)
+                printRequerimiento4(lst, size)
                 input("\n> Hundir cualquier tecla para continuar...")
 
 
