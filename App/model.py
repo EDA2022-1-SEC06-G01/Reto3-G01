@@ -321,27 +321,93 @@ def requerimiento5(catalog, segmentos, niveles, propiedad):
 def requerimiento6(catalog, playerShortName, posicion):
     posicionJugadores = catalog["posicionJugador_PlayerValue"]
     shortName_PlayerValue = catalog["addPlayerShortName_playerValue"]
-    jugadorPorRemplazar = me.getValue(mp.get(shortName_PlayerValue, playerShortName))
+    jugadorPorRemplazar = lt.getElement(me.getValue(mp.get(shortName_PlayerValue, playerShortName)), 1)
     lstPosicionJugadores = me.getValue(mp.get(posicionJugadores, posicion))
     mapaPotential = om.newMap(omaptype="RBT", comparefunction=compare_generalArboles)
     mapaAge = om.newMap(omaptype="RBT", comparefunction=compare_generalArboles)
     mapaHeight = om.newMap(omaptype="RBT", comparefunction=compare_generalArboles)
-    mapaPosition = om.newMap(omaptype="RBT", comparefunction=compare_generalArboles)
+    mapaCosto = om.newMap(omaptype="RBT", comparefunction=compare_generalArboles)
+    
     for _ in lt.iterator(lstPosicionJugadores):
         value = lt.getElement(_, 1)
-        existe = om.contains(mapaPotential,value["potential"])
-        if existe == True:
-            lst = me.getValue(om.get(mapaPotential, value["potential"]))
+        if value["sofifa_id"] == jugadorPorRemplazar["sofifa_id"]:
+            continue
+        existePotential = om.contains(mapaPotential, value["potential"])
+        existeAge = om.contains(mapaAge, value["age"])
+        existeHeight = om.contains(mapaAge, value["height_cm"])
+        existeCosto = om.contains(mapaAge, value["value_eur"])
+
+        if existePotential == True:
+            lstPotential = me.getValue(om.get(mapaPotential, value["potential"]))
+        else:
+            lstPotential = lt.newList(datastructure="ARRAY_LIST")
+            om.put(mapaPotential, value["potential"], lstPotential)
+
+        if existeAge == True:
+            lstAge = me.getValue(om.get(mapaAge, value["age"]))
+        else:
+            lstAge = lt.newList(datastructure="ARRAY_LIST")
+            om.put(mapaAge, value["age"], lstAge)
+
+        if existeHeight == True:
+            lstHeight = me.getValue(om.get(mapaHeight, value["height_cm"]))
+        else:
+            lstHeight = lt.newList(datastructure="ARRAY_LIST")
+            om.put(mapaHeight, value["height_cm"], lstHeight)
+
+        if existeCosto == True:
+            lstCosto = me.getValue(om.get(mapaCosto, value["value_eur"]))
+        else:
+            lstCosto = lt.newList(datastructure="ARRAY_LIST")
+            om.put(mapaCosto, value["value_eur"], lstCosto)
+
+        lt.addLast(lstPotential, _)
+        lt.addLast(lstAge, _)
+        lt.addLast(lstHeight, _)
+        lt.addLast(lstCosto, _)
+
+    minPotential = om.minKey(mapaPotential)
+    maxPotential = om.maxKey(mapaPotential)
+
+    minAge = om.minKey(mapaAge)
+    maxAge = om.maxKey(mapaAge)
+
+    minHeight = om.minKey(mapaHeight)
+    maxHeight = om.maxKey(mapaHeight)
+
+    minCosto = om.minKey(mapaCosto)
+    maxCosto = om.maxKey(mapaCosto)
+
+    valorPotential = jugadorPorRemplazar["potential"]
+    valorAge = float(jugadorPorRemplazar["age"])
+    valorHeight = float(jugadorPorRemplazar["height_cm"])
+    valorCosto = float(jugadorPorRemplazar["value_eur"])
+    vrJugadorPorRemplazar = (((valorPotential - minPotential) / (maxPotential - minPotential)) + ((valorAge - minAge) / (maxAge - minAge)) + ((valorHeight - minHeight) / (maxHeight - minHeight)) + ((valorCosto - minCosto) / (maxCosto - minCosto)))
+
+    mapaFinal = om.newMap(omaptype='RBT', comparefunction=compare_generalArboles)
+    for _ in lt.iterator(lstPosicionJugadores):
+        jugador = lt.getElement(_, 1)
+        if jugador["sofifa_id"] == jugadorPorRemplazar["sofifa_id"]:
+            continue
+        valorPotential = jugador["potential"]
+        valorAge = float(jugador["age"])
+        valorHeight = float(jugador["height_cm"])
+        valorCosto = float(jugador["value_eur"])
+        
+        vr = (((valorPotential - minPotential) / (maxPotential - minPotential)) + ((valorAge - minAge) / (maxAge - minAge)) + ((valorHeight - minHeight) / (maxHeight - minHeight)) + ((valorCosto - minCosto) / (maxCosto - minCosto)))
+        vrDiferencia = abs(vrJugadorPorRemplazar - vr)
+        exist = om.contains(mapaFinal, vrDiferencia)
+        if exist == True:
+            lst = me.getValue(om.get(mapaFinal, vrDiferencia))
         else:
             lst = lt.newList(datastructure="ARRAY_LIST")
-            om.put(mapaPotential, value["potential"], lst)
+            om.put(mapaFinal, vrDiferencia, lst)
         lt.addLast(lst, _)
-
-
-    print(jugadorPorRemplazar)
-    print()
-    print(lstPosicionJugadores)
-    input("llegamos al 6")
+    minVR = om.minKey(mapaFinal)
+    value = me.getValue(om.get(mapaFinal, minVR))
+    lstSize = lt.size(value)
+    lstSizePosicion = lt.size(lstPosicionJugadores)
+    return value, lstSize, lstSizePosicion
 
 
 # ================================
