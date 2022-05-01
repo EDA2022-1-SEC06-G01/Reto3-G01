@@ -425,7 +425,8 @@ def menuPrincipal():
 
 
             if int(inputs[0]) == 1:
-                club = input("Por favor introduce el club que deseas buscar")
+                #club = input("Por favor introduce el club que deseas buscar")
+                club = "Royal Charleroi S.C."
                 matrixDeJugadores, numeroAdquisiciones, ligaALaQuePertenece, tamanioMatrix, league_level  = controller.requerimiento1(catalog, club)
                 printRequerimiento1(club, matrixDeJugadores, numeroAdquisiciones, ligaALaQuePertenece, tamanioMatrix, league_level)
                 
@@ -463,9 +464,12 @@ def menuPrincipal():
 
             elif int(inputs[0]) == 4:
 
-                lim_inf = input("Ingrese el límite inferior de la fecha de nacimiento del jugador: ")
-                lim_sup = input("Ingrese el límite superior de la fecha de nacimiento del jugador: ")
-                trait = input("Ingrese una de las características que identifican a los jugadores: ")
+                #lim_inf = input("Ingrese el límite inferior de la fecha de nacimiento del jugador: ")
+                #lim_sup = input("Ingrese el límite superior de la fecha de nacimiento del jugador: ")
+                #trait = input("Ingrese una de las características que identifican a los jugadores: ")
+                lim_inf = "1990-01-01"
+                lim_sup = "2000-12-31"
+                trait = "Solid Player"
                 lst, size = controller.requerimiento4(catalog, lim_inf, lim_sup, trait)
                 printRequerimiento4(lst, size)
                 input("\n> Hundir cualquier tecla para continuar...")

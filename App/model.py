@@ -24,9 +24,6 @@
  * Dario Correal - Version inicial
  """
 
-
-from re import L
-from xmlrpc.server import list_public_methods
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -36,6 +33,7 @@ from DISClib.ADT import orderedmap as om
 assert cf
 import os
 import time
+import datetime
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -238,8 +236,6 @@ def playerAge_playerTraits(catalog, player, pos):
     """
     map = catalog['playerAge_playerTraits']
     traits = player['player_traits']
-   # if traits == []:
-      #  traits = "Unknown"
     i = 0
 
     while i < len(traits):
@@ -455,8 +451,8 @@ def campare_requerimiento1(player1, player2):
     player2 = lt.getElement(player2, 1)
     clubJoined1 = time.strptime(player1['club_joined'], "%Y-%m-%d")
     clubJoined2 = time.strptime(player2['club_joined'], "%Y-%m-%d")
-    dob1 = time.strptime(player1['dob'], "%Y-%m-%d")
-    dob2 = time.strptime(player2['dob'], "%Y-%m-%d")
+    dob1 = player1['dob'].timestamp()
+    dob2 = player2['dob'].timestamp()
     
     if clubJoined1 == clubJoined2:
         if player1['age'] == player2['age']:
@@ -488,13 +484,14 @@ def compareDates(date1, date2):
     """
     Compara dos fechas
     """
+    date1 = date1.timestamp()
+    date2 = date2.timestamp()
     if (date1 == date2):
-        return 0
+            return 0
     elif date1 > date2:
         return 1
     else:
         return -1
-
 # =========================
 # Funciones de ordenamiento
 # =========================

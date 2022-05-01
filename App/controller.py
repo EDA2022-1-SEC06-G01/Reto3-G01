@@ -58,6 +58,7 @@ def loadData(catalog, fileName):
         player["overall"] = float(player["overall"])
         player["potential"] = float(player["potential"])
         player["club_contract_valid_until"] = datetime.strptime(player["club_contract_valid_until"][0:-2], "%Y")
+        player["dob"] = datetime.strptime(player["dob"], "%Y-%m-%d")
         player["wage_eur"] = float(player["wage_eur"])
         player["player_tags"] = list(player["player_tags"].replace(",", "").split()) if len(player["player_tags"]) > 0 else ["Unknown"]
         player["player_traits"] = list(player["player_traits"].replace(", ", ",").split(","))
