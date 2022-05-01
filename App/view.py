@@ -103,6 +103,8 @@ def getFileSize():
 def printPrimerosCinco_UltimosCinco_Players(lstPlayers, lstSize):
     table = PrettyTable()
     table.field_names = ["Nombre", "Edad", "Altura", "Peso", "Nacionalidad", "Valor (€)", "Salario (€)", "Clausula de liberacion (€)", "Liga", "Club", "Fecha de vinculacion", "Posiciones", "Reputacion", "Tags", "Comentarios"]
+    table.max_table_width = 120
+    table.max_width = 20
     for _ in range(1, 6):
         player = controller.lstGet(lstPlayers, _)
         player = controller.lstGet(player, 1)
@@ -162,6 +164,8 @@ def printRequerimiento1(club, matrixDeJugadores, numeroAdquisiciones, ligaALaQue
     contador = 0
     table = PrettyTable()
     table.field_names = ["Nombre", "Edad", "Fecha de nacimiento", "Nacionalidad", "Valor Contrato", "Salario Jugador", "Valor Clausula Liberacion", "Fecha Vinculaicon a club", "Posiciones", "Comentarios", "Tags"]
+    table.max_table_width = 120
+    table.max_width = 20
     for _ in range(1, tamanioMatrix + 1):
         if contador == 5:
             break
@@ -265,6 +269,8 @@ def printRequerimiento3(lstPlayers, lstSize, tag, limInf, limSup, playerAmmount)
     print("The resutls are:")
     table = PrettyTable()
     table.field_names = ["Nombre", "Edad", "Fecha de nacimiento", "Nacioinalidad", "Valor de contrato", "Salario", "club", "Liga", "Potencial", "Desempenio", "Posiciones del jugador", "Comentarios", "Etiquetas"]
+    table.max_table_width = 120
+    table.max_width = 20
     if lstSize < 6:
         print("No hay suficiente cantidad de elementos para imprimir la tabla correctamente (minimo 6 para dar los 3 primero y ultimos)")
         for _ in lt.iterator(lstPlayers):
@@ -379,6 +385,8 @@ def printRequerimiento5(propiedad, segmentos, niveles, lstSizeJugadores, sizeMap
     print(f"{propiedad} Histogram with {segmentos} bins and '{niveles}' players per lvl mark.")
     table = PrettyTable()
     table.field_names = ["bin", "count", "lvl", "mark"]
+    table.max_table_width = 120
+    table.max_width = 20
     for _ in range(segmentos):
         elementos = lt.getElement(lstConteo, _ + 1)
         marks = lt.getElement(lstMark, _ + 1)
@@ -464,12 +472,9 @@ def menuPrincipal():
 
             elif int(inputs[0]) == 4:
 
-                #lim_inf = input("Ingrese el límite inferior de la fecha de nacimiento del jugador: ")
-                #lim_sup = input("Ingrese el límite superior de la fecha de nacimiento del jugador: ")
-                #trait = input("Ingrese una de las características que identifican a los jugadores: ")
-                lim_inf = "1990-01-01"
-                lim_sup = "2000-12-31"
-                trait = "Solid Player"
+                lim_inf = input("Ingrese el límite inferior de la fecha de nacimiento del jugador: ")
+                lim_sup = input("Ingrese el límite superior de la fecha de nacimiento del jugador: ")
+                trait = input("Ingrese una de las características que identifican a los jugadores: ")
                 lst, size = controller.requerimiento4(catalog, lim_inf, lim_sup, trait)
                 printRequerimiento4(lst, size)
                 input("\n> Hundir cualquier tecla para continuar...")

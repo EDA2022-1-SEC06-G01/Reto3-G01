@@ -257,7 +257,7 @@ def requerimiento4(catalog, lim_inf, lim_sup, trait):
     lst = me.getValue(pareja)
     lst = arbol_req4(lst, lim_inf, lim_sup)
     lstSize = lt.size(lst)
-    lst = sa.sort(lst, campare_requerimiento3)
+    lst = sa.sort(lst, compare_requerimiento4)
     return lst, lstSize
 
 def arbol_req4(lst, limInferiorDob, limSuperiorDob):
@@ -479,6 +479,11 @@ def campare_requerimiento3(player1, player2):
             return player1["overall"] > player2["overall"]
     else:
         return player1["wage_eur"] > player2["wage_eur"]
+
+def compare_requerimiento4(player1, player2):
+    player1 = lt.getElement(player1, 1)
+    player2 = lt.getElement(player2, 1)
+    return player1['dob'] > player2['dob']
 
 def compareDates(date1, date2):
     """
