@@ -28,7 +28,7 @@ import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort as sa
 from DISClib.ADT import orderedmap as om
 assert cf
 import os
@@ -292,7 +292,7 @@ def requerimiento5(catalog, segmentos, niveles, propiedad):
     i = 0
     min = None
     max = None
-    while i < 7:
+    while i < segmentos:
         if i == 0:
             min = minKey
             max = min + razonDeCambio

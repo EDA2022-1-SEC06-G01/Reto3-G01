@@ -27,6 +27,7 @@ assert cf
 from DISClib.ADT import list as lt
 from prettytable import PrettyTable
 from DISClib.ADT import map as mp
+import time
 from DISClib.DataStructures import mapentry as me
 
 
@@ -433,7 +434,7 @@ def menuPrincipal():
 
 
             if int(inputs[0]) == 1:
-                club = "Royal Charleroi S.C."
+                club = input("Introduzca el club que desea consultar: ")
                 matrixDeJugadores, numeroAdquisiciones, ligaALaQuePertenece, tamanioMatrix, league_level  = controller.requerimiento1(catalog, club)
                 printRequerimiento1(club, matrixDeJugadores, numeroAdquisiciones, ligaALaQuePertenece, tamanioMatrix, league_level)
                 
@@ -491,10 +492,8 @@ def menuPrincipal():
 
 
             elif int(inputs[0]) == 6:
-                #playerShortName = input("Introduzca el nombre del jugador que desea consultar: ")
-                #posicion = input("Ingrese la posicion del jugador que desea consultar: ")
-                playerShortName = "C. Archer"
-                posicion = "ST"
+                playerShortName = input("Introduzca el nombre del jugador que desea consultar: ")
+                posicion = input("Ingrese la posicion del jugador que desea consultar: ")
                 controller.requerimiento6(catalog, playerShortName, posicion)
                 input("\n> Hundir cualquier tecla para continuar...")
 
@@ -502,7 +501,6 @@ def menuPrincipal():
             elif int(inputs[0]) == 7:
                 fileSize = getFileSize()
                 print("Cargando información de los archivos ....")
-                import time
                 start = time.process_time()
                 playerAmmount = controller.loadData(catalog, fileSize)
                 lstPlayers, lstSize = controller.getPrimerosCinco_UltimosCinco(catalog["listaGeneral_Datos"])
