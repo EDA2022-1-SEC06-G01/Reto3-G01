@@ -418,8 +418,9 @@ def printRequerimiento5(propiedad, segmentos, niveles, lstSizeJugadores, sizeMap
                         ])
     return print(table.get_string())
 
-def printRequerimiento6(value, lstSize, lstSizePosicion):
-
+def printRequerimiento6(value, lstSize, lstSizePosicion, posicion):
+    print(f"La cantidad de jugadores en la posicion '{posicion}' es: {lstSizePosicion}")
+    print(f"La cantidad de jugadores mas similares a el jugador dado son: {lstSize}")
     table = PrettyTable()
     table.field_names = ["Nombre Completo", "Edad", "Nacimiento", "Nacionalidad", "Contrato", "Salarario", "Club", "Liga", "Potencial", "Desempeño", "Posiciones", "Valor Representativo", "Comentarios", "Etiquetas"]
     table.max_table_width = 120
@@ -581,7 +582,7 @@ def menuPrincipal():
                 playerShortName = input("Introduzca el nombre del jugador que desea consultar: ")
                 posicion = input("Ingrese la posicion del jugador que desea consultar: ")
                 value, lstSize, SizePosicion = controller.requerimiento6(catalog, playerShortName, posicion)
-                printRequerimiento6(value, lstSize, SizePosicion)
+                printRequerimiento6(value, lstSize, SizePosicion, posicion)
                 input("\n> Hundir cualquier tecla para continuar...")
 
 
