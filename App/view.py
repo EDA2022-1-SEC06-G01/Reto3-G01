@@ -389,8 +389,8 @@ def printRequerimiento5(propiedad, segmentos, niveles, lstSizeJugadores, sizeMap
     table.max_table_width = 120
     table.max_width = 20
     for _ in range(segmentos):
-        elementos = lt.getElement(lstConteo, _ + 1)
-        marks = lt.getElement(lstMark, _ + 1)
+        elementos = controller.lstGet(lstConteo, _ + 1)
+        marks = controller.lstGet(lstMark, _ + 1)
         marks_string = "*" * marks
         if _ == 0:
             minKey_act = minKey

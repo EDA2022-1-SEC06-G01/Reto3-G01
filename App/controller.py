@@ -125,16 +125,6 @@ def lstGet(lst, pos):
 
 
 # =========================
-# Funciones de ordenamiento
-# =========================
-
-
-# =======================================
-# Funciones de consulta sobre el catálogo
-# =======================================
-
-
-# =========================
 # Funciones para consola
 # =========================
 def clearConsole():

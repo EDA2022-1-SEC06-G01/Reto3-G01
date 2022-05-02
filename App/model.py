@@ -131,7 +131,7 @@ def posicionJugador_PlayerValue(catalog, player, pos):
         else:
             lst = lt.newList(datastructure='ARRAY_LIST')
             mp.put(map, position, lst)
-            # cuidado iba uno abajo posible error
+            
         lt.addLast(lst, lt.getElement(catalog['listaGeneral_Datos'], pos))
 
 def filtroDesempenio(lst, limInferiorDesempenio, limSuperiorDesempenio):
@@ -286,7 +286,7 @@ def requerimiento5(catalog, segmentos, niveles, propiedad):
     minKey = om.minKey(mapa)
     maxKey = om.maxKey(mapa)
     sizeMapa = om.size(mapa)
-    sizeMapa = lt.size(lstJugadores) # verificar
+    sizeMapa = lt.size(lstJugadores) 
     razonDeCambio = (maxKey - minKey) / segmentos
     lstConteo = lt.newList(datastructure="ARRAY_LIST")
     i = 0
@@ -451,9 +451,6 @@ def lstGet(lst, pos):
 # Funciones de comparacion
 # ================================================================
 def compare_clubJoinedDate(date1, date2):
-    """
-    Compara dos crimenes
-    """
     if (date1 == date2):
         return 0
     elif date1 > date2:
@@ -462,9 +459,6 @@ def compare_clubJoinedDate(date1, date2):
         return -1
 
 def compare_playerOverall(player1, player2):
-    """
-    Compara dos crimenes
-    """
     if (player1 == player2):
         return 0
     elif player1 > player2:
@@ -473,9 +467,6 @@ def compare_playerOverall(player1, player2):
         return -1
 
 def compare_playerPotential(player1, player2):
-    """
-    Compara dos crimenes
-    """
     if (player1 == player2):
         return 0
     elif player1 > player2:
@@ -484,9 +475,6 @@ def compare_playerPotential(player1, player2):
         return -1
 
 def compare_generalArboles(player1, player2):
-    """
-    Compara dos crimenes
-    """
     if (player1 == player2):
         return 0
     elif player1 > player2:
@@ -563,9 +551,6 @@ def compareDates(date1, date2):
         return 1
     else:
         return -1
-# =========================
-# Funciones de ordenamiento
-# =========================
 
 
 # =========================
