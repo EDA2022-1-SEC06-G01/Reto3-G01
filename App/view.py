@@ -426,7 +426,7 @@ def printRequerimiento6(value, lstSize, lstSizePosicion):
     table.max_width = 20
     
     if lstSize == 1:
-        player = lt.getElement(_, 1)
+        player = lt.getElement(lt.getElement(value, 1), 1)
         table.add_row([player["long_name"],
                        player["age"],
                        player["dob"],
