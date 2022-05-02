@@ -424,9 +424,10 @@ def printRequerimiento6(value, lstSize, lstSizePosicion):
     table.field_names = ["Nombre Completo", "Edad", "Nacimiento", "Nacionalidad", "Contrato", "Salarario", "Club", "Liga", "Potencial", "Desempeño", "Posiciones", "Valor Representativo", "Comentarios", "Etiquetas"]
     table.max_table_width = 120
     table.max_width = 20
-    for _ in lt.iterator(value):
-            player = lt.getElement(_, 1)
-            table.add_row([player["long_name"],
+    
+    if lstSize == 1:
+        player = lt.getElement(_, 1)
+        table.add_row([player["long_name"],
                        player["age"],
                        player["dob"],
                        player["nationality_name"],
@@ -441,11 +442,49 @@ def printRequerimiento6(value, lstSize, lstSizePosicion):
                        player["player_tags"],
                        player["player_traits"]
                        ])
-    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
-    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
-    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    elif lstSize > 6: 
+        for i in range(3):
+            for _ in lt.iterator(value):
+                    player = lt.getElement(_, 1)
+                    table.add_row([player["long_name"],
+                            player["age"],
+                            player["dob"],
+                            player["nationality_name"],
+                            player["value_eur"],
+                            player["wage_eur"],
+                            player["club_name"],
+                            player["league_name"],
+                            player["potential"],
+                            player["overall"],
+                            player["player_positions"],
+                            player["vr"],
+                            player["player_tags"],
+                            player["player_traits"]
+                            ])
+        table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+        table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
+        table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..."])
 
-    for _ in range(-1,-4):
+        for _ in range(-1,-4):
+                player = lt.getElement(value[_], 1)
+                table.add_row([player["long_name"],
+                        player["age"],
+                        player["dob"],
+                        player["nationality_name"],
+                        player["value_eur"],
+                        player["wage_eur"],
+                        player["club_name"],
+                        player["league_name"],
+                        player["potential"],
+                        player["overall"],
+                        player["player_positions"],
+                        player["vr"],
+                        player["player_tags"],
+                        player["player_traits"]
+                        ])
+
+    else:
+        for _ in lt.iterator(value):
             player = lt.getElement(_, 1)
             table.add_row([player["long_name"],
                        player["age"],
