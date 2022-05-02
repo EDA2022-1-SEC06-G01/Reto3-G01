@@ -397,6 +397,7 @@ def requerimiento6(catalog, playerShortName, posicion):
         vr = (((valorPotential - minPotential) / (maxPotential - minPotential)) + ((valorAge - minAge) / (maxAge - minAge)) + ((valorHeight - minHeight) / (maxHeight - minHeight)) + ((valorCosto - minCosto) / (maxCosto - minCosto)))
         vrDiferencia = abs(vrJugadorPorRemplazar - vr)
         exist = om.contains(mapaFinal, vrDiferencia)
+        jugador["vr"] = vr
         if exist == True:
             lst = me.getValue(om.get(mapaFinal, vrDiferencia))
         else:
